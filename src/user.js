@@ -6,7 +6,7 @@ class User {
     this.loan_ids = []
     this.request_ids = []
     this.saveable = false
-    this.db = new DB(userCacheTable)
+    this.db = new DB(userCacheTable, region)
   }
 
   getData () {
