@@ -21,7 +21,7 @@ describe('user class tests', () => {
 
   describe('constructor tests', () => {
     it('should create a user that is not saveable', () => {
-      let testUser = new User('construct-user', 'UserCacheTable')
+      let testUser = new User('construct-user', 'UserCacheTable', 'eu-west-2')
       testUser.saveable.should.equal(false)
     })
   })
@@ -33,7 +33,7 @@ describe('user class tests', () => {
       let getStub = sandbox.stub(DB.prototype, 'get')
       getStub.resolves({ user_id: userID, loan_ids: [2, 4], request_ids: [1, 2, 3] })
 
-      let testUser = new User(userID, 'UserCacheTable')
+      let testUser = new User(userID, 'UserCacheTable', 'eu-west-2')
 
       return testUser.getData().then(() => {
         testUser.user_id.should.equal(userID)
@@ -46,7 +46,7 @@ describe('user class tests', () => {
       let getStub = sandbox.stub(DB.prototype, 'get')
       getStub.rejects(new Error('No matching record found'))
 
-      let testUser = new User(userID, 'UserCacheTable')
+      let testUser = new User(userID, 'UserCacheTable', 'eu-west-2')
 
       return testUser.getData()
         .should.eventually.be.rejectedWith('No matching record found')
@@ -57,7 +57,7 @@ describe('user class tests', () => {
       let getStub = sandbox.stub(DB.prototype, 'get')
       getStub.rejects(new Error('DynamoDB failed'))
 
-      let testUser = new User(userID, 'UserCacheTable')
+      let testUser = new User(userID, 'UserCacheTable', 'eu-west-2')
 
       return testUser.getData()
         .should.eventually.be.rejectedWith('DynamoDB failed')
@@ -68,7 +68,7 @@ describe('user class tests', () => {
       let getStub = sandbox.stub(DB.prototype, 'get')
       getStub.resolves({})
 
-      let testUser = new User(userID, 'UserCacheTable')
+      let testUser = new User(userID, 'UserCacheTable', 'eu-west-2')
 
       return testUser.getData().then(() => {
         testUser.saveable.should.equal(true)
@@ -80,7 +80,7 @@ describe('user class tests', () => {
     const userID = 'save-user'
 
     it('should be rejected with an error if it is not saveable', () => {
-      let testUser = new User(userID, 'UserCacheTable')
+      let testUser = new User(userID, 'UserCacheTable', 'eu-west-2')
       testUser.saveable = false
 
       return testUser.save().should.eventually.be.rejectedWith('Record is not saveable')
@@ -91,7 +91,7 @@ describe('user class tests', () => {
       let saveStub = sandbox.stub(DB.prototype, 'save')
       saveStub.resolves(true)
 
-      let testUser = new User(userID, 'UserCacheTable')
+      let testUser = new User(userID, 'UserCacheTable', 'eu-west-2')
       testUser.saveable = true
 
       return testUser.save()
@@ -102,7 +102,7 @@ describe('user class tests', () => {
       let saveStub = sandbox.stub(DB.prototype, 'save')
       saveStub.rejects(new Error('DynamoDB broke'))
 
-      let testUser = new User(userID, 'UserCacheTable')
+      let testUser = new User(userID, 'UserCacheTable', 'eu-west-2')
       testUser.saveable = true
 
       return testUser.save()
@@ -122,7 +122,7 @@ describe('user class tests', () => {
       saveStub.resolves(true)
       getStub.resolves({ request_ids: [], loan_ids: [] })
 
-      let testUser = new User(userID, 'UserCacheTable')
+      let testUser = new User(userID, 'UserCacheTable', 'eu-west-2')
 
       return testUser.getData().then(() => {
         return testUser.save().then(() => {
@@ -134,7 +134,7 @@ describe('user class tests', () => {
 
   describe('addLoan method', () => {
     const userID = 'addloan-user'
-    let testUser = new User(userID, 'UserCacheTable')
+    let testUser = new User(userID, 'UserCacheTable', 'eu-west-2')
 
     it('should add the loan id if the array does not already contain it', () => {
       testUser.loan_ids = []

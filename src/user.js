@@ -1,12 +1,12 @@
 const DB = require('@lulibrary/lag-utils').DB
 
 class User {
-  constructor (userID, userCacheTable) {
+  constructor (userID, userCacheTable, region) {
     this.user_id = userID
     this.loan_ids = []
     this.request_ids = []
     this.saveable = false
-    this.db = new DB(userCacheTable, 'eu-west-2')
+    this.db = new DB(userCacheTable)
   }
 
   getData () {
