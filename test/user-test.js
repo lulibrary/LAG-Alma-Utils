@@ -1,6 +1,9 @@
-const AWS_MOCK = require('aws-sdk-mock')
 const sinon = require('sinon')
+const sandbox = sinon.sandbox.create()
 
+const DB = require('@lulibrary/lag-utils').DB
+
+// Test libraries
 const chai = require('chai')
 const should = chai.should()
 const chai_as_promised = require('chai-as-promised')
@@ -8,27 +11,28 @@ const sinon_chai = require('sinon-chai')
 chai.use(chai_as_promised)
 chai.use(sinon_chai)
 
+// Module under test
 const User = require('../src/user')
 
-const CacheError = require('../cache-error')
-
 describe('user class tests', () => {
+  afterEach(() => {
+    sandbox.restore()
+  })
+
   describe('constructor tests', () => {
     it('should create a user that is not saveable', () => {
       let testUser = new User('construct-user', 'UserCacheTable')
       testUser.saveable.should.equal(false)
     })
-  })  
+  })
 
   describe('get user data tests', () => {
-    const user_id = 'get-user';
-
-    afterEach(() => {
-      AWS_MOCK.restore('DynamoDB.DocumentClient', 'get')
-    })
+    const user_id = 'get-user'
 
     it('should update the user data if a matching user record is found', () => {
-      AWS_MOCK.mock('DynamoDB.DocumentClient', 'get', { Item: { user_id, loan_ids: [2, 4], request_ids: [1, 2, 3] } })
+      let getStub = sandbox.stub(DB.prototype, 'get')
+      getStub.resolves({ user_id, loan_ids: [2, 4], request_ids: [1, 2, 3] })
+
       let testUser = new User(user_id, 'UserCacheTable')
 
       return testUser.getData().then(() => {
@@ -39,7 +43,9 @@ describe('user class tests', () => {
     })
 
     it('should be rejected with an error if no matching user record is found', () => {
-      AWS_MOCK.mock('DynamoDB.DocumentClient', 'get', {})
+      let getStub = sandbox.stub(DB.prototype, 'get')
+      getStub.rejects(new Error('No matching record found'))
+
       let testUser = new User(user_id, 'UserCacheTable')
 
       return testUser.getData()
@@ -47,12 +53,9 @@ describe('user class tests', () => {
         .and.should.eventually.be.an.instanceOf(Error)
     })
 
-    
-  
     it('should be rejected with an error if dynamoDB throws an error', () => {
-      let dynamoGetStub = sinon.stub()
-      dynamoGetStub.callsArgWith(1, new Error('DynamoDB failed'), null)
-      AWS_MOCK.mock('DynamoDB.DocumentClient', 'get', dynamoGetStub)
+      let getStub = sandbox.stub(DB.prototype, 'get')
+      getStub.rejects(new Error('DynamoDB failed'))
 
       let testUser = new User(user_id, 'UserCacheTable')
 
@@ -62,9 +65,8 @@ describe('user class tests', () => {
     })
 
     it('should make the record saveable if it succeeds', () => {
-      let dynamoGetStub = sinon.stub()
-      dynamoGetStub.callsArgWith(1, null, { Item: {}})
-      AWS_MOCK.mock('DynamoDB.DocumentClient', 'get', dynamoGetStub)
+      let getStub = sandbox.stub(DB.prototype, 'get')
+      getStub.resolves({})
 
       let testUser = new User(user_id, 'UserCacheTable')
 
@@ -74,24 +76,21 @@ describe('user class tests', () => {
     })
   })
 
-
   describe('save method', () => {
-    const user_id = 'save-user';
-
-    afterEach(() => {
-      AWS_MOCK.restore('DynamoDB.DocumentClient', 'put')
-    })
+    const user_id = 'save-user'
 
     it('should be rejected with an error if it is not saveable', () => {
       let testUser = new User(user_id, 'UserCacheTable')
       testUser.saveable = false
 
       return testUser.save().should.eventually.be.rejectedWith('Record is not saveable')
-        .and.should.eventually.be.an.instanceOf(CacheError)
+        .and.should.eventually.be.an.instanceOf(Error)
     })
 
-    it('should be fulfilled with true if the record saves successfully', () => {
-      AWS_MOCK.mock('DynamoDB.DocumentClient', 'put', true)
+    it('should be fulfilled if the record saves successfully', () => {
+      let saveStub = sandbox.stub(DB.prototype, 'save')
+      saveStub.resolves(true)
+
       let testUser = new User(user_id, 'UserCacheTable')
       testUser.saveable = true
 
@@ -100,7 +99,9 @@ describe('user class tests', () => {
     })
 
     it('should be rejected with an error if the record does not save', () => {
-      AWS_MOCK.mock('DynamoDB.DocumentClient', 'put', (p, cb) => cb(new Error('DynamoDB broke'), null))
+      let saveStub = sandbox.stub(DB.prototype, 'save')
+      saveStub.rejects(new Error('DynamoDB broke'))
+
       let testUser = new User(user_id, 'UserCacheTable')
       testUser.saveable = true
 
@@ -111,29 +112,22 @@ describe('user class tests', () => {
 
     it('should be called with the correct parameters', () => {
       const expectedParams = {
-        Item: {
-          user_id,
-          loan_ids: [],
-          request_ids: []
-        },
-        TableName: 'UserCacheTable'
+        user_id,
+        loan_ids: [],
+        request_ids: []
       }
 
-      let saveStub = sinon.stub()
-      saveStub.callsArgWith(1, null, true)
-      AWS_MOCK.mock('DynamoDB.DocumentClient', 'get', { Item: { request_ids: [], loan_ids: [] } })
-      AWS_MOCK.mock('DynamoDB.DocumentClient', 'put', saveStub)
+      let saveStub = sandbox.stub(DB.prototype, 'save')
+      let getStub = sandbox.stub(DB.prototype, 'get')
+      saveStub.resolves(true)
+      getStub.resolves({ request_ids: [], loan_ids: [] })
 
       let testUser = new User(user_id, 'UserCacheTable')
 
       return testUser.getData().then(() => {
-        testUser.save().then(() => {
+        return testUser.save().then(() => {
           saveStub.should.have.been.calledWith(expectedParams)
         })
-      })
-
-      after(() => {
-        AWS_MOCK.restore('DynamoDB.DocumentClient', 'get')
       })
     })
   })
@@ -156,5 +150,4 @@ describe('user class tests', () => {
       testUser.loan_ids.should.deep.equal([2])
     })
   })
-
 })
