@@ -1,12 +1,8 @@
 const DB = require('@lulibrary/lag-utils').DB
-// const userGet = require('./get-user-data')
-// const getUserData = userGet.getUserData
 
 class User {
   constructor (userID, userCacheTable) {
     this.user_id = userID
-    // this.docClient = new AWS.DynamoDB.DocumentClient();
-    // this.userCacheTable = userCacheTable;
     this.loan_ids = []
     this.request_ids = []
     this.saveable = false
