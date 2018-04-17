@@ -1,0 +1,19 @@
+{
+  "name": "@lulibrary/lag-alma-utils",
+  "version": "0.1.0",
+  "description": "Library API Gateway - Alma Utils",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "nyc --reporter=lcov mocha --recursive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lulibrary/LAG-Alma-Utils.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lulibrary/LAG-Alma-Utils/issues"
+  },
+  "homepage": "https://github.com/lulibrary/LAG-Alma-Utils#readme"
+}
