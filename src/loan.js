@@ -21,11 +21,11 @@ const fields = [
 ]
 
 class Loan {
-  constructor (loan_id, loanCacheTable, region) {
-    this.loan_id = loan_id
+  constructor (loanID, loanCacheTable, region) {
+    this.loan_id = loanID
     this.loanCacheTable = loanCacheTable
     this.loanData = {
-      loan_id
+      loan_id: loanID
     }
     this.db = new DB(loanCacheTable, region)
   }
