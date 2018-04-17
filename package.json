@@ -1,0 +1,34 @@
+{
+  "name": "@lulibrary/lag-alma-utils",
+  "version": "0.1.0",
+  "description": "Library API Gateway - Alma Utils",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "nyc --reporter=lcov mocha --recursive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lulibrary/LAG-Alma-Utils.git"
+  },
+  "author": "Lancaster University Library <library.dit@lancaster.ac.uk>",
+  "contributors": [
+    "Dom Belcher <d.belcher@lancaster.ac.uk>"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lulibrary/LAG-Alma-Utils/issues"
+  },
+  "homepage": "https://github.com/lulibrary/LAG-Alma-Utils#readme",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "eslint": "^4.19.1",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-mocha": "^5.0.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "mocha": "^5.1.0",
+    "nyc": "^11.6.0"
+  }
+}
