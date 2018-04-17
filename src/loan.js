@@ -21,15 +21,13 @@ const fields = [
 ]
 
 class Loan {
-  constructor (loan_id, loanCacheTable) {
+  constructor (loan_id, loanCacheTable, region) {
     this.loan_id = loan_id
     this.loanCacheTable = loanCacheTable
     this.loanData = {
       loan_id
     }
-    this.db = new DB({
-      loanCacheTable
-    })
+    this.db = new DB(loanCacheTable, region)
   }
 
   populate (loanData) {
@@ -45,7 +43,7 @@ class Loan {
   }
 
   save () {
-    return this.db.saveLoan(this.loanData)
+    return this.db.save(this.loanData)
   }
 }
 

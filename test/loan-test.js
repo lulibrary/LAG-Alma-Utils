@@ -1,7 +1,7 @@
-const AWS_MOCK = require('aws-sdk-mock')
 const DB = require('@lulibrary/lag-utils').DB
 
 const sinon = require('sinon')
+const sandbox = sinon.sandbox.create()
 
 const chai = require('chai')
 const chai_as_promised = require('chai-as-promised')
@@ -15,8 +15,6 @@ const expect = chai.expect
 const Loan = require('../src/loan')
 
 describe('loan class tests', () => {
-  const sandbox = sinon.sandbox.create()
-
   afterEach(() => {
     sandbox.restore()
   })
@@ -178,8 +176,8 @@ describe('loan class tests', () => {
   })
 
   describe('save method tests', () => {
-    it('should call the database saveloan method with the loan data', () => {
-      const saveStub = sandbox.stub(DB.prototype, 'saveLoan')
+    it('should call the database save method with the loan data', () => {
+      const saveStub = sandbox.stub(DB.prototype, 'save')
       saveStub.resolves(true)
 
       const testLoan = new Loan('a loan', 'loan cache table')
