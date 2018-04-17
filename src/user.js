@@ -1,12 +1,10 @@
-const AWS = require('aws-sdk')
-
 const DB = require('@lulibrary/lag-utils').DB
 // const userGet = require('./get-user-data')
 // const getUserData = userGet.getUserData
 
 class User {
-  constructor (user_id, userCacheTable) {
-    this.user_id = user_id
+  constructor (userID, userCacheTable) {
+    this.user_id = userID
     // this.docClient = new AWS.DynamoDB.DocumentClient();
     // this.userCacheTable = userCacheTable;
     this.loan_ids = []
@@ -42,9 +40,9 @@ class User {
     }
   }
 
-  addLoan (loan_id) {
-    if (!this.loan_ids.includes(loan_id)) {
-      this.loan_ids.push(loan_id)
+  addLoan (loanID) {
+    if (!this.loan_ids.includes(loanID)) {
+      this.loan_ids.push(loanID)
     }
     return this
   }

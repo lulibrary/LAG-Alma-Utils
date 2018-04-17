@@ -5,11 +5,11 @@ const DB = require('@lulibrary/lag-utils').DB
 
 // Test libraries
 const chai = require('chai')
-const should = chai.should()
-const chai_as_promised = require('chai-as-promised')
-const sinon_chai = require('sinon-chai')
-chai.use(chai_as_promised)
-chai.use(sinon_chai)
+const chaiAsPromised = require('chai-as-promised')
+const sinonChai = require('sinon-chai')
+chai.use(chaiAsPromised)
+chai.use(sinonChai)
+chai.should()
 
 // Module under test
 const User = require('../src/user')
@@ -27,16 +27,16 @@ describe('user class tests', () => {
   })
 
   describe('get user data tests', () => {
-    const user_id = 'get-user'
+    const userID = 'get-user'
 
     it('should update the user data if a matching user record is found', () => {
       let getStub = sandbox.stub(DB.prototype, 'get')
-      getStub.resolves({ user_id, loan_ids: [2, 4], request_ids: [1, 2, 3] })
+      getStub.resolves({ user_id: userID, loan_ids: [2, 4], request_ids: [1, 2, 3] })
 
-      let testUser = new User(user_id, 'UserCacheTable')
+      let testUser = new User(userID, 'UserCacheTable')
 
       return testUser.getData().then(() => {
-        testUser.user_id.should.equal(user_id)
+        testUser.user_id.should.equal(userID)
         testUser.loan_ids.should.deep.equal([2, 4])
         testUser.request_ids.should.deep.equal([1, 2, 3])
       })
@@ -46,7 +46,7 @@ describe('user class tests', () => {
       let getStub = sandbox.stub(DB.prototype, 'get')
       getStub.rejects(new Error('No matching record found'))
 
-      let testUser = new User(user_id, 'UserCacheTable')
+      let testUser = new User(userID, 'UserCacheTable')
 
       return testUser.getData()
         .should.eventually.be.rejectedWith('No matching record found')
@@ -57,7 +57,7 @@ describe('user class tests', () => {
       let getStub = sandbox.stub(DB.prototype, 'get')
       getStub.rejects(new Error('DynamoDB failed'))
 
-      let testUser = new User(user_id, 'UserCacheTable')
+      let testUser = new User(userID, 'UserCacheTable')
 
       return testUser.getData()
         .should.eventually.be.rejectedWith('DynamoDB failed')
@@ -68,7 +68,7 @@ describe('user class tests', () => {
       let getStub = sandbox.stub(DB.prototype, 'get')
       getStub.resolves({})
 
-      let testUser = new User(user_id, 'UserCacheTable')
+      let testUser = new User(userID, 'UserCacheTable')
 
       return testUser.getData().then(() => {
         testUser.saveable.should.equal(true)
@@ -77,10 +77,10 @@ describe('user class tests', () => {
   })
 
   describe('save method', () => {
-    const user_id = 'save-user'
+    const userID = 'save-user'
 
     it('should be rejected with an error if it is not saveable', () => {
-      let testUser = new User(user_id, 'UserCacheTable')
+      let testUser = new User(userID, 'UserCacheTable')
       testUser.saveable = false
 
       return testUser.save().should.eventually.be.rejectedWith('Record is not saveable')
@@ -91,7 +91,7 @@ describe('user class tests', () => {
       let saveStub = sandbox.stub(DB.prototype, 'save')
       saveStub.resolves(true)
 
-      let testUser = new User(user_id, 'UserCacheTable')
+      let testUser = new User(userID, 'UserCacheTable')
       testUser.saveable = true
 
       return testUser.save()
@@ -102,7 +102,7 @@ describe('user class tests', () => {
       let saveStub = sandbox.stub(DB.prototype, 'save')
       saveStub.rejects(new Error('DynamoDB broke'))
 
-      let testUser = new User(user_id, 'UserCacheTable')
+      let testUser = new User(userID, 'UserCacheTable')
       testUser.saveable = true
 
       return testUser.save()
@@ -112,7 +112,7 @@ describe('user class tests', () => {
 
     it('should be called with the correct parameters', () => {
       const expectedParams = {
-        user_id,
+        user_id: userID,
         loan_ids: [],
         request_ids: []
       }
@@ -122,7 +122,7 @@ describe('user class tests', () => {
       saveStub.resolves(true)
       getStub.resolves({ request_ids: [], loan_ids: [] })
 
-      let testUser = new User(user_id, 'UserCacheTable')
+      let testUser = new User(userID, 'UserCacheTable')
 
       return testUser.getData().then(() => {
         return testUser.save().then(() => {
@@ -133,8 +133,8 @@ describe('user class tests', () => {
   })
 
   describe('addLoan method', () => {
-    const user_id = 'addloan-user'
-    let testUser = new User(user_id, 'UserCacheTable')
+    const userID = 'addloan-user'
+    let testUser = new User(userID, 'UserCacheTable')
 
     it('should add the loan id if the array does not already contain it', () => {
       testUser.loan_ids = []
