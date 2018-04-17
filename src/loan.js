@@ -2,7 +2,7 @@
 const _pick = require('lodash.pick')
 const moment = require('moment')
 const _merge = require('lodash.merge')
-const DB = require('./db.js')
+const DB = require('@lulibrary/lag-utils').DB
 
 const fields = [
   'loan_id',

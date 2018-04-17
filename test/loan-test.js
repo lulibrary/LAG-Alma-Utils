@@ -1,5 +1,5 @@
 const AWS_MOCK = require('aws-sdk-mock')
-const DB = require('../db')
+const DB = require('@lulibrary/lag-utils').DB
 
 const sinon = require('sinon')
 
@@ -12,7 +12,7 @@ const should = chai.should()
 const expect = chai.expect
 
 // Module under test
-const Loan = require('../loan')
+const Loan = require('../src/loan')
 
 describe('loan class tests', () => {
   const sandbox = sinon.sandbox.create()
