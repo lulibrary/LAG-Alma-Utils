@@ -45,6 +45,10 @@ class Loan {
   save () {
     return this.db.save(this.loanData)
   }
+
+  delete () {
+    return this.db.delete(this.loan_id)
+  }
 }
 
 module.exports = Loan
