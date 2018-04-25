@@ -186,4 +186,36 @@ describe('loan class tests', () => {
       })
     })
   })
+
+  describe('delete method tests', () => {
+    it('should call DB#delete with the correct loan ID', () => {
+      const deleteStub = sandbox.stub(DB.prototype, 'delete')
+      deleteStub.resolves(true)
+
+      const testLoan = new Loan('a loan', 'loan cache table')
+
+      return testLoan.delete().then(() => {
+        deleteStub.should.have.been.calledWith('a loan')
+      })
+    })
+
+    it('should be fulfilled if DB#delete resolves', () => {
+      const deleteStub = sandbox.stub(DB.prototype, 'delete')
+      deleteStub.resolves(true)
+
+      const testLoan = new Loan('a loan', 'loan cache table')
+
+      return testLoan.delete().should.eventually.be.fulfilled
+    })
+
+    it('should be rejected if DB#delete is rejected', () => {
+      const deleteStub = sandbox.stub(DB.prototype, 'delete')
+      deleteStub.rejects(new Error('Database error'))
+
+      const testLoan = new Loan('a loan', 'loan cache table')
+
+      return testLoan.delete().should.eventually.be.rejectedWith('Database error')
+        .and.should.eventually.be.an.instanceOf(Error)
+    })
+  })
 })
