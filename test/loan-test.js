@@ -181,21 +181,40 @@ describe('loan class tests', () => {
 
       const testLoan = new Loan('a loan', 'loan cache table')
 
-      testLoan.save(() => {
+      return testLoan.save().then(() => {
         saveStub.should.have.been.calledWith(testLoan.loanData)
       })
+    })
+
+    it('should be fulfilled if DB#save resolves', () => {
+      const saveStub = sandbox.stub(DB.prototype, 'save')
+      saveStub.resolves(true)
+
+      const testLoan = new Loan('a loan', 'loan cache table')
+
+      return testLoan.save().should.eventually.be.fulfilled
+    })
+
+    it('should be rejected if DB#save is rejected', () => {
+      const saveStub = sandbox.stub(DB.prototype, 'save')
+      saveStub.rejects(new Error('Database error'))
+
+      const testLoan = new Loan('a loan', 'loan cache table')
+
+      return testLoan.save().should.eventually.be.rejectedWith('Database error')
+        .and.should.eventually.be.an.instanceOf(Error)
     })
   })
 
   describe('delete method tests', () => {
-    it('should call DB#delete with the correct loan ID', () => {
+    it('should call DB#delete with the correct key', () => {
       const deleteStub = sandbox.stub(DB.prototype, 'delete')
       deleteStub.resolves(true)
 
       const testLoan = new Loan('a loan', 'loan cache table')
 
       return testLoan.delete().then(() => {
-        deleteStub.should.have.been.calledWith('a loan')
+        deleteStub.should.have.been.calledWith({ loan_id: 'a loan' })
       })
     })
 
