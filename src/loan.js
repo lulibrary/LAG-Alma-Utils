@@ -47,7 +47,7 @@ class Loan {
   }
 
   delete () {
-    return this.db.delete(this.loan_id)
+    return this.db.delete({ loan_id: this.loan_id })
   }
 }
 
