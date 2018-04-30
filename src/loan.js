@@ -1,10 +1,19 @@
-// const AWS = require('aws-sdk');
-const _pick = require('lodash.pick')
-const moment = require('moment')
-const _merge = require('lodash.merge')
-const DB = require('@lulibrary/lag-utils').DB
+const Item = require('./item')
 
-const fields = [
+class LoanItem extends Item {
+  constructor (loanID, loanCacheTable, region) {
+    let data = {
+      id: loanID,
+      tableName: loanCacheTable,
+      region,
+      key: 'loan_id',
+      type: 'loan'
+    }
+    super(data)
+  }
+}
+
+LoanItem.fields = [
   'loan_id',
   'user_id',
   'renewable',
@@ -20,35 +29,4 @@ const fields = [
   'process_status'
 ]
 
-class Loan {
-  constructor (loanID, loanCacheTable, region) {
-    this.loan_id = loanID
-    this.loanCacheTable = loanCacheTable
-    this.loanData = {
-      loan_id: loanID
-    }
-    this.db = new DB(loanCacheTable, region)
-  }
-
-  populate (loanData) {
-    this.loanData = _merge(this.loanData, _pick(loanData, fields))
-    return this
-  }
-
-  addExpiryDate (expiry_field = 'due_date') {
-    if (this.loanData[expiry_field]) {
-      this.loanData.expiry_date = moment(this.loanData[expiry_field]).unix()
-    }
-    return this
-  }
-
-  save () {
-    return this.db.save(this.loanData)
-  }
-
-  delete () {
-    return this.db.delete({ loan_id: this.loan_id })
-  }
-}
-
-module.exports = Loan
+module.exports = LoanItem
