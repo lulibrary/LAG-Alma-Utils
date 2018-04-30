@@ -21,9 +21,9 @@ describe('request class tests', () => {
   describe('constructor tests', () => {
     it('should populate the instance with the expected parameters', () => {
       let testRequest = new Request('test', 'cachetable')
-      testRequest.request_id.should.equal('test')
-      testRequest.requestCacheTable.should.equal('cachetable')
-      testRequest.requestData.should.deep.equal({ request_id: 'test' })
+      testRequest.id.should.equal('test')
+      testRequest.tableName.should.equal('cachetable')
+      testRequest.data.should.deep.equal({ request_id: 'test' })
     })
   })
 
@@ -42,9 +42,9 @@ describe('request class tests', () => {
       }
 
       let testRequest = new Request('a request', 'a table')
-      testRequest.requestData.should.deep.equal({request_id: 'a request'})
+      testRequest.data.should.deep.equal({request_id: 'a request'})
       testRequest.populate(requestData)
-      testRequest.requestData.should.deep.equal({request_id: 'a request'})
+      testRequest.data.should.deep.equal({request_id: 'a request'})
     })
 
     it('should keep all wanted fields in the loan data', () => {
@@ -97,9 +97,9 @@ describe('request class tests', () => {
       }
 
       let testRequest = new Request('a request', 'a table', 'a region')
-      testRequest.requestData.should.deep.equal({ request_id: 'a request' })
+      testRequest.data.should.deep.equal({ request_id: 'a request' })
       testRequest.populate(input)
-      testRequest.requestData.should.deep.equal(expected)
+      testRequest.data.should.deep.equal(expected)
     })
 
     it('should overwrite existing fields if there a new values provided', () => {
@@ -124,11 +124,11 @@ describe('request class tests', () => {
       }
 
       let testRequest = new Request('a request', 'a table')
-      testRequest.requestData.should.deep.equal({request_id: 'a request'})
+      testRequest.data.should.deep.equal({request_id: 'a request'})
       testRequest.populate(input1)
-      testRequest.requestData.should.deep.equal(expected1)
+      testRequest.data.should.deep.equal(expected1)
       testRequest.populate(input2)
-      testRequest.requestData.should.deep.equal(expected2)
+      testRequest.data.should.deep.equal(expected2)
     })
 
     it('should not remove existing fields if no new value is provided', () => {
@@ -159,11 +159,11 @@ describe('request class tests', () => {
       }
 
       let testRequest = new Request('a request', 'a table')
-      testRequest.requestData.should.deep.equal({request_id: 'a request'})
+      testRequest.data.should.deep.equal({request_id: 'a request'})
       testRequest.populate(input1)
-      testRequest.requestData.should.deep.equal(expected1)
+      testRequest.data.should.deep.equal(expected1)
       testRequest.populate(input2)
-      testRequest.requestData.should.deep.equal(expected2)
+      testRequest.data.should.deep.equal(expected2)
     })
   })
 
@@ -173,7 +173,7 @@ describe('request class tests', () => {
     it('should not add an expiry date if the expiry field is not set', () => {
       const testRequest = new Request('a request', 'RequestCacheTable')
         .addExpiryDate()
-      testRequest.requestData.should.not.have.property('expiry_date')
+      testRequest.data.should.not.have.property('expiry_date')
     })
   })
 
@@ -185,7 +185,7 @@ describe('request class tests', () => {
       const testRequest = new Request('a request', 'request cache table')
 
       return testRequest.save().then(() => {
-        saveStub.should.have.been.calledWith(testRequest.requestData)
+        saveStub.should.have.been.calledWith(testRequest.data)
       })
     })
 
