@@ -11,7 +11,7 @@ chai.use(sinonChai)
 chai.should()
 
 // Module under test
-const Loan = require('../src/loan-item')
+const Loan = require('../src/loan')
 
 describe('loan-item class tests', () => {
   afterEach(() => {
