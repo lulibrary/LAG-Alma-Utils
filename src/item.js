@@ -3,8 +3,11 @@ const _merge = require('lodash.merge')
 const moment = require('moment')
 const DB = require('@lulibrary/lag-utils').DB
 
+const requiredKeys = ['type', 'key', 'id', 'tableName', 'region']
+
 class Item {
   constructor (data) {
+    checkKeys(data)
     this.type = data.type
     this.key = data.key
     this.id = data.id
@@ -36,6 +39,20 @@ class Item {
     let Key = {}
     Key[this.key] = this.id
     return this.db.delete(Key)
+  }
+}
+
+const checkKeys = (dataObject) => {
+  let dataKeys = Object.keys(dataObject)
+  let missingKeys = []
+  requiredKeys.forEach(key => {
+    if (dataKeys.indexOf(key) === -1) {
+      missingKeys.push(key)
+    }
+  })
+
+  if (missingKeys.length !== 0) {
+    throw new Error(`Constructor object requires key${missingKeys.length === 1 ? '' : 's'}: ${missingKeys.join(', ')}`)
   }
 }
 
