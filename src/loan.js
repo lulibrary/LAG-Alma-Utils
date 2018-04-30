@@ -1,14 +1,11 @@
 const Item = require('./item')
 
 class LoanItem extends Item {
-  constructor (loanID, loanCacheTable, region) {
-    let data = {
-      id: loanID,
-      tableName: loanCacheTable,
-      region,
-      key: 'loan_id',
-      type: 'loan'
-    }
+  constructor (params) {
+    let data = params
+    data.key = 'loan_id'
+    data.type = 'loan'
+
     super(data)
   }
 }
