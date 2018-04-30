@@ -20,7 +20,7 @@ describe('request class tests', () => {
 
   describe('constructor tests', () => {
     it('should populate the instance with the expected parameters', () => {
-      let testRequest = new Request('test', 'cachetable')
+      let testRequest = new Request({ id: 'test', tableName: 'cachetable', region: 'a region' })
       testRequest.id.should.equal('test')
       testRequest.tableName.should.equal('cachetable')
       testRequest.data.should.deep.equal({ request_id: 'test' })
@@ -41,7 +41,7 @@ describe('request class tests', () => {
         request_id: 'a request'
       }
 
-      let testRequest = new Request('a request', 'a table')
+      let testRequest = new Request({ id: 'a request', tableName: 'cachetable', region: 'a region' })
       testRequest.data.should.deep.equal({request_id: 'a request'})
       testRequest.populate(requestData)
       testRequest.data.should.deep.equal({request_id: 'a request'})
@@ -96,7 +96,7 @@ describe('request class tests', () => {
         process_status: 'a status'
       }
 
-      let testRequest = new Request('a request', 'a table', 'a region')
+      let testRequest = new Request({ id: 'a request', tableName: 'cachetable', region: 'a region' })
       testRequest.data.should.deep.equal({ request_id: 'a request' })
       testRequest.populate(input)
       testRequest.data.should.deep.equal(expected)
@@ -123,7 +123,7 @@ describe('request class tests', () => {
         user_primary_id: 'another user'
       }
 
-      let testRequest = new Request('a request', 'a table')
+      let testRequest = new Request({ id: 'a request', tableName: 'cachetable', region: 'a region' })
       testRequest.data.should.deep.equal({request_id: 'a request'})
       testRequest.populate(input1)
       testRequest.data.should.deep.equal(expected1)
@@ -158,7 +158,7 @@ describe('request class tests', () => {
         title: 'a book'
       }
 
-      let testRequest = new Request('a request', 'a table')
+      let testRequest = new Request({ id: 'a request', tableName: 'cachetable', region: 'a region' })
       testRequest.data.should.deep.equal({request_id: 'a request'})
       testRequest.populate(input1)
       testRequest.data.should.deep.equal(expected1)
@@ -171,7 +171,7 @@ describe('request class tests', () => {
     it('should add the correct expiry date for the request')
 
     it('should not add an expiry date if the expiry field is not set', () => {
-      const testRequest = new Request('a request', 'RequestCacheTable')
+      const testRequest = new Request({ id: 'a request', tableName: 'cachetable', region: 'a region' })
         .addExpiryDate()
       testRequest.data.should.not.have.property('expiry_date')
     })
@@ -182,7 +182,7 @@ describe('request class tests', () => {
       const saveStub = sandbox.stub(DB.prototype, 'save')
       saveStub.resolves(true)
 
-      const testRequest = new Request('a request', 'request cache table')
+      const testRequest = new Request({ id: 'a request', tableName: 'cachetable', region: 'a region' })
 
       return testRequest.save().then(() => {
         saveStub.should.have.been.calledWith(testRequest.data)
@@ -193,7 +193,7 @@ describe('request class tests', () => {
       const saveStub = sandbox.stub(DB.prototype, 'save')
       saveStub.resolves(true)
 
-      const testRequest = new Request('a request', 'request cache table')
+      const testRequest = new Request({ id: 'a request', tableName: 'cachetable', region: 'a region' })
 
       return testRequest.save().should.eventually.be.fulfilled
     })
@@ -202,7 +202,7 @@ describe('request class tests', () => {
       const saveStub = sandbox.stub(DB.prototype, 'save')
       saveStub.rejects(new Error('Database error'))
 
-      const testRequest = new Request('a request', 'request cache table')
+      const testRequest = new Request({ id: 'a request', tableName: 'cachetable', region: 'a region' })
 
       return testRequest.save().should.eventually.be.rejectedWith('Database error')
         .and.should.eventually.be.an.instanceOf(Error)
@@ -214,7 +214,7 @@ describe('request class tests', () => {
       const deleteStub = sandbox.stub(DB.prototype, 'delete')
       deleteStub.resolves(true)
 
-      const testRequest = new Request('a request', 'request cache table')
+      const testRequest = new Request({ id: 'a request', tableName: 'cachetable', region: 'a region' })
 
       return testRequest.delete().then(() => {
         deleteStub.should.have.been.calledWith({ request_id: 'a request' })
@@ -225,7 +225,7 @@ describe('request class tests', () => {
       const deleteStub = sandbox.stub(DB.prototype, 'delete')
       deleteStub.resolves(true)
 
-      const testRequest = new Request('a request', 'request cache table')
+      const testRequest = new Request({ id: 'a request', tableName: 'cachetable', region: 'a region' })
 
       return testRequest.delete().should.eventually.be.fulfilled
     })
@@ -234,7 +234,7 @@ describe('request class tests', () => {
       const deleteStub = sandbox.stub(DB.prototype, 'delete')
       deleteStub.rejects(new Error('Database error'))
 
-      const testRequest = new Request('a request', 'request cache table')
+      const testRequest = new Request({ id: 'a request', tableName: 'cachetable', region: 'a region' })
 
       return testRequest.delete().should.eventually.be.rejectedWith('Database error')
         .and.should.eventually.be.an.instanceOf(Error)

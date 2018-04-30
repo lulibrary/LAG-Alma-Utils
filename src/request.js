@@ -2,14 +2,11 @@
 const Item = require('./item')
 
 class Request extends Item {
-  constructor (requestID, requestCacheTable, region) {
-    let data = {
-      id: requestID,
-      tableName: requestCacheTable,
-      region,
-      key: 'request_id',
-      type: 'request'
-    }
+  constructor (params) {
+    let data = params
+    data.key = 'request_id'
+    data.type = 'request'
+
     super(data)
   }
 }
