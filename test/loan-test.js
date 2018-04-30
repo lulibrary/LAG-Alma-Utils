@@ -20,10 +20,10 @@ describe('loan-item class tests', () => {
 
   describe('constructor tests', () => {
     it('should populate the instance with the expected parameters', () => {
-      let testLoan = new Loan('test', 'cachetable')
-      testLoan.id.should.equal('test')
+      let testLoan = new Loan({ id: 'a loan', tableName: 'cachetable', region: 'a region' })
+      testLoan.id.should.equal('a loan')
       testLoan.tableName.should.equal('cachetable')
-      testLoan.data.should.deep.equal({ loan_id: 'test' })
+      testLoan.data.should.deep.equal({ loan_id: 'a loan' })
     })
   })
 
@@ -41,7 +41,7 @@ describe('loan-item class tests', () => {
         loan_id: 'a loan'
       }
 
-      let testLoan = new Loan('a loan', 'a table')
+      let testLoan = new Loan({ id: 'a loan', tableName: 'cachetable', region: 'a region' })
       testLoan.data.should.deep.equal({loan_id: 'a loan'})
       testLoan.populate(data)
       testLoan.data.should.deep.equal({loan_id: 'a loan'})
@@ -84,7 +84,7 @@ describe('loan-item class tests', () => {
         process_status: 'unknown'
       }
 
-      let testLoan = new Loan('a loan', 'a table')
+      let testLoan = new Loan({ id: 'a loan', tableName: 'cachetable', region: 'a region' })
       testLoan.data.should.deep.equal({loan_id: 'a loan'})
       testLoan.populate(input)
       testLoan.data.should.deep.equal(expected)
@@ -115,7 +115,7 @@ describe('loan-item class tests', () => {
         renewable: false
       }
 
-      let testLoan = new Loan('a loan', 'a table')
+      let testLoan = new Loan({ id: 'a loan', tableName: 'cachetable', region: 'a region' })
       testLoan.data.should.deep.equal({loan_id: 'a loan'})
       testLoan.populate(input1)
       testLoan.data.should.deep.equal(expected1)
@@ -150,7 +150,7 @@ describe('loan-item class tests', () => {
         title: 'a book'
       }
 
-      let testLoan = new Loan('a loan', 'a table')
+      let testLoan = new Loan({ id: 'a loan', tableName: 'cachetable', region: 'a region' })
       testLoan.data.should.deep.equal({loan_id: 'a loan'})
       testLoan.populate(input1)
       testLoan.data.should.deep.equal(expected1)
@@ -161,14 +161,14 @@ describe('loan-item class tests', () => {
 
   describe('add expiry date method tests', () => {
     it('should add the correct expiry date for the due date', () => {
-      const testLoan = new Loan('a loan', 'LoanCacheTable')
+      const testLoan = new Loan({ id: 'a loan', tableName: 'cachetable', region: 'a region' })
         .populate({due_date: '2018-02-23T14:10:06Z'})
         .addExpiryDate('due_date')
       testLoan.data.expiry_date.should.equal(1519395006)
     })
 
     it('should not add an expiry date if the expiry field is not set', () => {
-      const testLoan = new Loan('a loan', 'LoanCacheTable')
+      const testLoan = new Loan({ id: 'a loan', tableName: 'cachetable', region: 'a region' })
         .addExpiryDate('due_date')
       testLoan.data.should.not.have.property('expiry_date')
     })
@@ -179,7 +179,7 @@ describe('loan-item class tests', () => {
       const saveStub = sandbox.stub(DB.prototype, 'save')
       saveStub.resolves(true)
 
-      const testLoan = new Loan('a loan', 'loan cache table')
+      const testLoan = new Loan({ id: 'a loan', tableName: 'cachetable', region: 'a region' })
 
       return testLoan.save().then(() => {
         saveStub.should.have.been.calledWith(testLoan.data)
@@ -190,7 +190,7 @@ describe('loan-item class tests', () => {
       const saveStub = sandbox.stub(DB.prototype, 'save')
       saveStub.resolves(true)
 
-      const testLoan = new Loan('a loan', 'loan cache table')
+      const testLoan = new Loan({ id: 'a loan', tableName: 'cachetable', region: 'a region' })
 
       return testLoan.save().should.eventually.be.fulfilled
     })
@@ -199,7 +199,7 @@ describe('loan-item class tests', () => {
       const saveStub = sandbox.stub(DB.prototype, 'save')
       saveStub.rejects(new Error('Database error'))
 
-      const testLoan = new Loan('a loan', 'loan cache table')
+      const testLoan = new Loan({ id: 'a loan', tableName: 'cachetable', region: 'a region' })
 
       return testLoan.save().should.eventually.be.rejectedWith('Database error')
         .and.should.eventually.be.an.instanceOf(Error)
@@ -211,7 +211,7 @@ describe('loan-item class tests', () => {
       const deleteStub = sandbox.stub(DB.prototype, 'delete')
       deleteStub.resolves(true)
 
-      const testLoan = new Loan('a loan', 'loan cache table')
+      const testLoan = new Loan({ id: 'a loan', tableName: 'cachetable', region: 'a region' })
 
       return testLoan.delete().then(() => {
         deleteStub.should.have.been.calledWith({ loan_id: 'a loan' })
@@ -222,7 +222,7 @@ describe('loan-item class tests', () => {
       const deleteStub = sandbox.stub(DB.prototype, 'delete')
       deleteStub.resolves(true)
 
-      const testLoan = new Loan('a loan', 'loan cache table')
+      const testLoan = new Loan({ id: 'a loan', tableName: 'cachetable', region: 'a region' })
 
       return testLoan.delete().should.eventually.be.fulfilled
     })
@@ -231,7 +231,7 @@ describe('loan-item class tests', () => {
       const deleteStub = sandbox.stub(DB.prototype, 'delete')
       deleteStub.rejects(new Error('Database error'))
 
-      const testLoan = new Loan('a loan', 'loan cache table')
+      const testLoan = new Loan({ id: 'a loan', tableName: 'cachetable', region: 'a region' })
 
       return testLoan.delete().should.eventually.be.rejectedWith('Database error')
         .and.should.eventually.be.an.instanceOf(Error)

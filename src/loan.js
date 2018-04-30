@@ -1,14 +1,15 @@
+const _merge = require('lodash.merge')
 const Item = require('./item')
 
+let baseData = {
+  key: 'loan_id',
+  type: 'loan'
+}
+
 class LoanItem extends Item {
-  constructor (loanID, loanCacheTable, region) {
-    let data = {
-      id: loanID,
-      tableName: loanCacheTable,
-      region,
-      key: 'loan_id',
-      type: 'loan'
-    }
+  constructor (params) {
+    let data = _merge(params, baseData)
+
     super(data)
   }
 }
