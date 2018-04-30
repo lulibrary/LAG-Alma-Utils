@@ -13,7 +13,7 @@ chai.should()
 // Module under test
 const Loan = require('../src/loan')
 
-describe('loan class tests', () => {
+describe('loan-item class tests', () => {
   afterEach(() => {
     sandbox.restore()
   })
@@ -21,15 +21,15 @@ describe('loan class tests', () => {
   describe('constructor tests', () => {
     it('should populate the instance with the expected parameters', () => {
       let testLoan = new Loan('test', 'cachetable')
-      testLoan.loan_id.should.equal('test')
-      testLoan.loanCacheTable.should.equal('cachetable')
-      testLoan.loanData.should.deep.equal({ loan_id: 'test' })
+      testLoan.id.should.equal('test')
+      testLoan.tableName.should.equal('cachetable')
+      testLoan.data.should.deep.equal({ loan_id: 'test' })
     })
   })
 
   describe('populate method tests', () => {
     it('should remove unwanted fields in the loan data', () => {
-      const loanData = {
+      const data = {
         param1: 'unwanted',
         param2: 'also unwanted',
         param3: {
@@ -42,9 +42,9 @@ describe('loan class tests', () => {
       }
 
       let testLoan = new Loan('a loan', 'a table')
-      testLoan.loanData.should.deep.equal({loan_id: 'a loan'})
-      testLoan.populate(loanData)
-      testLoan.loanData.should.deep.equal({loan_id: 'a loan'})
+      testLoan.data.should.deep.equal({loan_id: 'a loan'})
+      testLoan.populate(data)
+      testLoan.data.should.deep.equal({loan_id: 'a loan'})
     })
 
     it('should keep all wanted fields in the loan data', () => {
@@ -85,9 +85,9 @@ describe('loan class tests', () => {
       }
 
       let testLoan = new Loan('a loan', 'a table')
-      testLoan.loanData.should.deep.equal({loan_id: 'a loan'})
+      testLoan.data.should.deep.equal({loan_id: 'a loan'})
       testLoan.populate(input)
-      testLoan.loanData.should.deep.equal(expected)
+      testLoan.data.should.deep.equal(expected)
     })
 
     it('should overwrite existing fields if there a new values provided', () => {
@@ -116,11 +116,11 @@ describe('loan class tests', () => {
       }
 
       let testLoan = new Loan('a loan', 'a table')
-      testLoan.loanData.should.deep.equal({loan_id: 'a loan'})
+      testLoan.data.should.deep.equal({loan_id: 'a loan'})
       testLoan.populate(input1)
-      testLoan.loanData.should.deep.equal(expected1)
+      testLoan.data.should.deep.equal(expected1)
       testLoan.populate(input2)
-      testLoan.loanData.should.deep.equal(expected2)
+      testLoan.data.should.deep.equal(expected2)
     })
 
     it('should not remove existing fields if no new value is provided', () => {
@@ -151,11 +151,11 @@ describe('loan class tests', () => {
       }
 
       let testLoan = new Loan('a loan', 'a table')
-      testLoan.loanData.should.deep.equal({loan_id: 'a loan'})
+      testLoan.data.should.deep.equal({loan_id: 'a loan'})
       testLoan.populate(input1)
-      testLoan.loanData.should.deep.equal(expected1)
+      testLoan.data.should.deep.equal(expected1)
       testLoan.populate(input2)
-      testLoan.loanData.should.deep.equal(expected2)
+      testLoan.data.should.deep.equal(expected2)
     })
   })
 
@@ -163,14 +163,14 @@ describe('loan class tests', () => {
     it('should add the correct expiry date for the due date', () => {
       const testLoan = new Loan('a loan', 'LoanCacheTable')
         .populate({due_date: '2018-02-23T14:10:06Z'})
-        .addExpiryDate()
-      testLoan.loanData.expiry_date.should.equal(1519395006)
+        .addExpiryDate('due_date')
+      testLoan.data.expiry_date.should.equal(1519395006)
     })
 
     it('should not add an expiry date if the expiry field is not set', () => {
       const testLoan = new Loan('a loan', 'LoanCacheTable')
-        .addExpiryDate()
-      testLoan.loanData.should.not.have.property('expiry_date')
+        .addExpiryDate('due_date')
+      testLoan.data.should.not.have.property('expiry_date')
     })
   })
 
@@ -182,7 +182,7 @@ describe('loan class tests', () => {
       const testLoan = new Loan('a loan', 'loan cache table')
 
       return testLoan.save().then(() => {
-        saveStub.should.have.been.calledWith(testLoan.loanData)
+        saveStub.should.have.been.calledWith(testLoan.data)
       })
     })
 
