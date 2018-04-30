@@ -1,11 +1,16 @@
+const _merge = require('lodash.merge')
+
 // parent class
 const Item = require('./item')
 
+let baseData = {
+  key: 'request_id',
+  type: 'request'
+}
+
 class Request extends Item {
   constructor (params) {
-    let data = params
-    data.key = 'request_id'
-    data.type = 'request'
+    let data = _merge(params, baseData)
 
     super(data)
   }
