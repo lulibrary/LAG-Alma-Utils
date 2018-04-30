@@ -6,17 +6,18 @@ const DB = require('@lulibrary/lag-utils').DB
 class Item {
   constructor (data) {
     this.type = data.type
+    this.key = data.key
     this.id = data.id
 
-    this.itemTable = data.itemTable
-    this.db = new DB(data.itemTable, data.region)
+    this.tableName = data.tableName
+    this.db = new DB(data.tableName, data.region)
     this.data = {}
 
-    this.data[`${data.type}_id`] = data.id
+    this.data[data.key] = data.id
   }
 
   populate (data) {
-    this.data = _merge(this.data, _pick(data, this.fields))
+    this.data = _merge(this.data, _pick(data, this.constructor.fields))
     return this
   }
 
@@ -33,7 +34,7 @@ class Item {
 
   delete () {
     let Key = {}
-    Key[`${this.type}_id`] = this.id
+    Key[this.key] = this.id
     return this.db.delete(Key)
   }
 }
