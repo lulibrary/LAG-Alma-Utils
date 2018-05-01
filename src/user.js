@@ -37,10 +37,22 @@ class User {
   }
 
   addLoan (loanID) {
-    if (!this.loan_ids.includes(loanID)) {
-      this.loan_ids.push(loanID)
+    return this.add('loan_ids', loanID)
+  }
+
+  addRequest (requestID) {
+    return this.add('request_ids', requestID)
+  }
+
+  add (field, value) {
+    if (!(this[field] instanceof Array)) {
+      throw new Error(`Field ${field} is not an array`)
+    } else {
+      if (!this[field].includes(value)) {
+        this[field].push(value)
+      }
+      return this
     }
-    return this
   }
 }
 
