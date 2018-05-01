@@ -10,6 +10,7 @@ const sinonChai = require('sinon-chai')
 chai.use(chaiAsPromised)
 chai.use(sinonChai)
 chai.should()
+const expect = chai.expect
 
 // Module under test
 const User = require('../src/user')
@@ -148,6 +149,54 @@ describe('user class tests', () => {
       testUser.loan_ids.should.deep.equal([2])
       testUser.addLoan(2)
       testUser.loan_ids.should.deep.equal([2])
+    })
+  })
+
+  describe('addRequest method', () => {
+    const userID = 'addrequest-user'
+    let testUser = new User(userID, 'UserCacheTable', 'eu-west-2')
+
+    it('should add the request id if the array does not already contain it', () => {
+      testUser.request_ids = []
+      testUser.request_ids.should.not.include(2)
+      testUser.addRequest(2)
+      testUser.request_ids.should.include(2)
+    })
+
+    it('should not add the loan id if the array already contain it', () => {
+      testUser.request_ids = [2]
+      testUser.request_ids.should.deep.equal([2])
+      testUser.addRequest(2)
+      testUser.request_ids.should.deep.equal([2])
+    })
+  })
+
+  describe('add method', () => {
+    const userID = 'add-user'
+    let testUser = new User(userID, 'UserCacheTable', 'eu-west-2')
+
+    it('should add the value to the field if the array does not already contain it', () => {
+      testUser.testField = []
+      testUser.testField.should.not.include(2)
+      testUser.add('testField', 2)
+      testUser.testField.should.include(2)
+    })
+
+    it('should not add the value to the field if the array already contains it', () => {
+      testUser.testField = [2]
+      testUser.testField.should.deep.equal([2])
+      testUser.add('testField', 2)
+      testUser.testField.should.deep.equal([2])
+    })
+
+    it('should throw an error if the specified field does not exist', () => {
+      delete testUser.testField
+      expect(() => testUser.add('testField', 2)).to.throw(Error)
+    })
+
+    it('should throw an error if the specified field is not an array', () => {
+      testUser.testField = 2
+      expect(() => testUser.add('testField', 2)).to.throw('Field testField is not an array')
     })
   })
 })
