@@ -10,7 +10,8 @@ const Schema = dynamoose.Schema
 
 const calculateExpiry = (dueDate) => {
   if (dueDate) {
-    return moment(dueDate, 'YYYY-MM-DDTHH:MM:SSZ').unix()
+    console.log(dueDate)
+    return moment(dueDate, 'YYYY-MM-DDTHH:mm:ssZ').unix()
   } else {
     return 0
   }
