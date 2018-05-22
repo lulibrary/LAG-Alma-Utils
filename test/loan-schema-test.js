@@ -1,5 +1,7 @@
-// const sinon = require('sinon')
-// const sandbox = sinon.sandbox.create()
+const AWS_MOCK = require('aws-sdk-mock')
+
+const sinon = require('sinon')
+const sandbox = sinon.sandbox.create()
 
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
@@ -28,6 +30,25 @@ describe('loan schema tests', function () {
 
     it('should return a time in seconds', () => {
       calculateExpiry('1970-01-01T00:00:01Z').should.equal(1)
+    })
+  })
+
+  describe('model tests', () => {
+    it('should set the expiry date if the due date is set', () => {
+      const TestLoanModel = LoanSchema('table', 'region')
+      const putStub = sandbox.stub()
+      putStub.callsArgWith(1, null, true)
+      AWS_MOCK.mock('DynamoDB', 'putItem', putStub)
+
+      let testLoan = new TestLoanModel({
+        loan_id: 'a loan',
+        due_date: '1970-01-01T00:00:00Z',
+        test: 'test'
+      })
+
+      testLoan.save()
+
+      testLoan.expiry_date.should.equal(0)
     })
   })
 })

@@ -9,8 +9,8 @@ dynamoose.setDefaults({
 const Schema = dynamoose.Schema
 
 const calculateExpiry = (dueDate) => {
+  console.log(dueDate)
   if (dueDate) {
-    console.log(dueDate)
     return moment(dueDate, 'YYYY-MM-DDTHH:mm:ssZ').unix()
   } else {
     return 0
@@ -29,7 +29,9 @@ const loanSchema = new Schema({
   due_date: String,
   expiry_date: {
     type: Number,
-    default: (model) => calculateExpiry(model.due_date)
+    default: function (model) {
+      return calculateExpiry(model.due_date)
+    }
   },
   item_barcode: String,
   mms_id: String,
