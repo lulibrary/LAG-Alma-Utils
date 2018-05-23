@@ -9,7 +9,6 @@ dynamoose.setDefaults({
 const Schema = dynamoose.Schema
 
 const calculateExpiry = (dueDate) => {
-  console.log(dueDate)
   if (dueDate) {
     return moment(dueDate, 'YYYY-MM-DDTHH:mm:ssZ').unix()
   } else {
@@ -40,7 +39,9 @@ const loanSchema = new Schema({
   description: String,
   publication_year: String,
   process_status: String
-}, {})
+}, {
+  useDocumentTypes: true
+})
 
 module.exports = (tableName, region) => {
   if (region) {

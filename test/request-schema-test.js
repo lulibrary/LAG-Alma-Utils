@@ -11,7 +11,7 @@ it('should export a function', () => {
 })
 
 it('should return a dynamoose model', () => {
-  const TestRequestModel = RequestSchema('table', 'region')
+  const TestRequestModel = RequestSchema('requesttable', 'region')
   const testRequest = new TestRequestModel({
     request_id: 'a request'
   })
