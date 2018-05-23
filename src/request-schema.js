@@ -15,16 +15,22 @@ const requestSchema = new Schema({
   user_primary_id: String,
   request_type: String,
   request_sub_type: {
-    value: String,
-    desc: String
+    type: 'map',
+    map: {
+      value: String,
+      desc: String
+    }
   },
   request_status: String,
   pickup_location: String,
   pickup_location_type: String,
   pickup_location_library: String,
   material_type: {
-    value: String,
-    desc: String
+    type: 'map',
+    map: {
+      value: String,
+      desc: String
+    }
   },
   comment: String,
   place_in_queue: String,
@@ -37,7 +43,9 @@ const requestSchema = new Schema({
   description: String,
   resource_sharing: String,
   process_status: String
-}, {})
+}, {
+  useDocumentTypes: true
+})
 
 module.exports = (tableName, region) => {
   if (region) {
