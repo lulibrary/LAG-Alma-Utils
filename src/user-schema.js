@@ -1,7 +1,6 @@
 const dynamoose = require('dynamoose')
 const moment = require('moment')
 const _chunk = require('lodash.chunk')
-const _unionBy = require('lodash.unionby')
 
 const batchGetLimit = 25
 
@@ -34,22 +33,14 @@ const userSchema = new Schema({
   }
 }, {})
 
-module.exports = (userTable) => {
-  if (userTable.region) {
-    dynamoose.AWS.config.update({
-      region: userTable.region
-    })
-  }
-
-  let model = dynamoose.model(userTable.name, userSchema)
-
-  model.prototype.addLoan = function (loanID) {
+userSchema.methods = {
+  addLoan: function (loanID) {
     if (!this.loan_ids.includes(loanID)) {
       this.loan_ids.push(loanID)
     }
-  }
+  },
 
-  model.prototype.getLoanData = function (loanModel) {
+  getLoanData: function (loanModel) {
     this.loans = []
 
     const loanIdBatches = _chunk(this.loan_ids, batchGetLimit)
@@ -64,6 +55,16 @@ module.exports = (userTable) => {
 
     return Promise.all(promises).then(() => this.loans)
   }
+}
+
+module.exports = (userTable) => {
+  if (userTable.region) {
+    dynamoose.AWS.config.update({
+      region: userTable.region
+    })
+  }
+
+  let model = dynamoose.model(userTable.name, userSchema)
 
   return model
 }

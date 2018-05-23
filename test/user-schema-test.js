@@ -11,7 +11,7 @@ const should = chai.should()
 const rewire = require('rewire')
 
 const Model = require('dynamoose').Model
-const LoanSchema = require('../src/loan-schema')
+// const LoanSchema = require('../src/loan-schema')
 
 // Module under test
 const UserSchema = rewire('../src/user-schema')
