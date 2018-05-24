@@ -13,30 +13,30 @@ module.exports = (tableName, key) => {
     .then(() => {
       console.log('DynamoDB Local started')
     })
-    .then(() => {
-      return dynamo.createTable({
-        AttributeDefinitions: [
-          {
-            AttributeName: key,
-            AttributeType: 'S'
-          }
-        ],
-        KeySchema: [
-          {
-            AttributeName: key,
-            KeyType: 'HASH'
-          }
-        ],
-        ProvisionedThroughput: {
-          ReadCapacityUnits: 5,
-          WriteCapacityUnits: 5
-        },
-        TableName: tableName
-      }).promise()
-    })
-    .then(() => {
-      console.log(`Table ${tableName} created with key ${key}`)
-    })
+    // .then(() => {
+    //   return dynamo.createTable({
+    //     AttributeDefinitions: [
+    //       {
+    //         AttributeName: key,
+    //         AttributeType: 'S'
+    //       }
+    //     ],
+    //     KeySchema: [
+    //       {
+    //         AttributeName: key,
+    //         KeyType: 'HASH'
+    //       }
+    //     ],
+    //     ProvisionedThroughput: {
+    //       ReadCapacityUnits: 5,
+    //       WriteCapacityUnits: 5
+    //     },
+    //     TableName: tableName
+    //   }).promise()
+    // })
+    // .then(() => {
+    //   console.log(`Table ${tableName} created with key ${key}`)
+    // })
     .catch(e => {
       console.log(e)
       throw e
