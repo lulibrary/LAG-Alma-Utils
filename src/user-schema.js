@@ -16,8 +16,8 @@ const expiryOffset = {
   unit: 'hours'
 }
 
-const calculateExpiry = () => {
-  return moment.add(expiryOffset.value, expiryOffset.unit).unix()
+const calculateExpiry = (offset) => {
+  return moment().add(offset.value, offset.unit).unix()
 }
 
 const userSchema = new Schema({
@@ -29,31 +29,53 @@ const userSchema = new Schema({
   request_ids: [String],
   expiry_date: {
     type: Number,
-    default: (model) => calculateExpiry(model.due_date)
+    default: (model) => calculateExpiry(expiryOffset)
   }
 }, {})
 
 userSchema.methods = {
-  addLoan: function (loanID) {
-    if (!this.loan_ids.includes(loanID)) {
-      this.loan_ids.push(loanID)
-    }
+  getData: function (model, source, destination, tableKey) {
+    const batches = _chunk(source, batchGetLimit)
+    let promises = []
+
+    batches.forEach((batch) => {
+      const batchKeys = batch.map((id) => {
+        let getMethodKey = {}
+        getMethodKey[tableKey] = id
+        return getMethodKey
+      })
+      promises.push(model.batchGet(batchKeys)
+        .then(data => {
+          Array.prototype.push.apply(destination, data)
+        }))
+    })
+
+    return Promise.all(promises).then(() => destination)
   },
 
   getLoanData: function (loanModel) {
     this.loans = []
+    return this.getData(loanModel, this.loan_ids, this.loans, 'loan_id')
+  },
 
-    const loanIdBatches = _chunk(this.loan_ids, batchGetLimit)
-    let promises = []
+  getRequestData: function (requestModel) {
+    this.requests = []
+    return this.getData(requestModel, this.request_ids, this.requests, 'request_id')
+  },
 
-    loanIdBatches.forEach((batch) => {
-      const batchKeys = batch.map((loanID) => { return { loan_id: loanID } })
-      promises.push(loanModel.batchGet(batchKeys).then(loans => {
-        this.loans = this.loans.concat(loans)
-      }))
-    })
+  addLoan: function (loanID) {
+    return this.add('loan_ids', loanID)
+  },
 
-    return Promise.all(promises).then(() => this.loans)
+  addRequest: function (requestID) {
+    return this.add('request_ids', requestID)
+  },
+
+  add: function (field, value) {
+    if (!this[field].includes(value)) {
+      this[field].push(value)
+    }
+    return this
   }
 }
 
