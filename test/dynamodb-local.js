@@ -14,6 +14,9 @@ module.exports = (tableName, key) => {
       console.log('DynamoDB Local started')
     })
     .then(() => {
+      return setTimeout(Promise.resolve, 2500)
+    })
+    .then(() => {
       return dynamo.createTable({
         AttributeDefinitions: [
           {

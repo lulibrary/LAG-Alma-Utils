@@ -22,7 +22,8 @@ const uuid = require('uuid/v4')
 
 describe('request schema tests', function () {
   this.timeout(5000)
-  before(() => {
+  before(function () {
+    this.timeout(25000)
     process.env.AWS_ACCESS_KEY_ID = 'key'
     process.env.AWS_SECRET_ACCESS_KEY = 'key2'
     return require('./dynamodb-local')('requestTable', 'request_id')
