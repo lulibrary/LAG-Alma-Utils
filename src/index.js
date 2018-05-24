@@ -1,3 +1,5 @@
 module.exports = {
-  Request: require('./request')
+  Request: require('./request'),
+  LoanSchema: require('./loan-schema'),
+  RequestSchema: require('./request-schema')
 }
