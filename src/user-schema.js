@@ -79,14 +79,4 @@ userSchema.methods = {
   }
 }
 
-module.exports = (userTable) => {
-  if (userTable.region) {
-    dynamoose.AWS.config.update({
-      region: userTable.region
-    })
-  }
-
-  let model = dynamoose.model(userTable.name, userSchema)
-
-  return model
-}
+module.exports = (userTable) => dynamoose.model(userTable.name, userSchema)

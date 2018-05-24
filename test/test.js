@@ -5,6 +5,7 @@ chai.should()
 const Request = require('../src/request')
 const RequestSchema = require('../src/request-schema')
 const LoanSchema = require('../src/loan-schema')
+const UserSchema = require('../src/user-schema')
 
 // Module under test
 const Utils = require('../src')
@@ -24,5 +25,9 @@ describe('index tests', () => {
 
   it('should export a LoanSchema object matching the one exported by loan-schema.js', () => {
     Utils.LoanSchema.should.deep.equal(LoanSchema)
+  })
+
+  it('should export a UserSchema object matching the one exported by user-schema.js', () => {
+    Utils.UserSchema.should.deep.equal(UserSchema)
   })
 })
