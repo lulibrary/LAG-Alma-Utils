@@ -3,6 +3,7 @@ const docClient = new AWS.DynamoDB.DocumentClient({ endpoint: 'http://127.0.0.1:
 const dynamo = new AWS.DynamoDB({ endpoint: 'http://127.0.0.1:8000', region: 'eu-west-2' })
 
 const dynamoose = require('dynamoose')
+dynamoose.local()
 
 const chai = require('chai')
 chai.should()
@@ -24,7 +25,6 @@ describe('request schema tests', function () {
   before(() => {
     process.env.AWS_ACCESS_KEY_ID = 'key'
     process.env.AWS_SECRET_ACCESS_KEY = 'key2'
-    dynamoose.local()
     return require('./dynamodb-local')('requestTable', 'request_id')
       .then(() => {
         return dynamo.listTables().promise().then((data) => {

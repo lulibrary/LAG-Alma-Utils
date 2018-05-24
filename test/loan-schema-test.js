@@ -34,8 +34,12 @@ describe('loan schema tests', function () {
   })
 
   describe('model tests', () => {
+    after(() => {
+      AWS_MOCK.restore('DynamoDB')
+    })
+
     it('should set the expiry date if the due date is set', () => {
-      const TestLoanModel = LoanSchema('loantable', 'region')
+      const TestLoanModel = LoanSchema.model('loantable')
       const putStub = sandbox.stub()
       putStub.callsArgWith(1, null, true)
       AWS_MOCK.mock('DynamoDB', 'putItem', putStub)

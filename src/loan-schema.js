@@ -43,11 +43,9 @@ const loanSchema = new Schema({
   useDocumentTypes: true
 })
 
-module.exports = (tableName, region) => {
-  if (region) {
-    dynamoose.AWS.config.update({
-      region
-    })
-  }
-  return dynamoose.model(tableName, loanSchema)
+module.exports = {
+  model: (tableName) => dynamoose.model(tableName, loanSchema),
+  updateRegion: (region) => dynamoose.AWS.config.update({
+    region
+  })
 }
