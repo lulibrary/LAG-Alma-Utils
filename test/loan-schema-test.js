@@ -3,6 +3,8 @@ const AWS_MOCK = require('aws-sdk-mock')
 const sinon = require('sinon')
 const sandbox = sinon.sandbox.create()
 
+const dynamoose = require('dynamoose')
+
 const chai = require('chai')
 const chaiAsPromised = require('chai-as-promised')
 chai.use(chaiAsPromised)
@@ -30,6 +32,14 @@ describe('loan schema tests', function () {
 
     it('should return a time in seconds', () => {
       calculateExpiry('1970-01-01T00:00:01Z').should.equal(1)
+    })
+  })
+
+  describe('update region function tests', () => {
+    it('should update the region in the AWS config', () => {
+      dynamoose.AWS.config.region = ''
+      LoanSchema.updateRegion('eu-west-2')
+      dynamoose.AWS.config.region.should.equal('eu-west-2')
     })
   })
 
