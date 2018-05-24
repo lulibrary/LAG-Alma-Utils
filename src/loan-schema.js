@@ -40,7 +40,8 @@ const loanSchema = new Schema({
   publication_year: String,
   process_status: String
 }, {
-  useDocumentTypes: true
+  useDocumentTypes: true,
+  useNativeBooleans: true
 })
 
 module.exports = {
