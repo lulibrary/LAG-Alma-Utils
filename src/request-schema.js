@@ -47,11 +47,9 @@ const requestSchema = new Schema({
   useDocumentTypes: true
 })
 
-module.exports = (tableName, region) => {
-  if (region) {
-    dynamoose.AWS.config.update({
-      region
-    })
-  }
-  return dynamoose.model(tableName, requestSchema)
+module.exports = {
+  model: (tableName) => dynamoose.model(tableName, requestSchema),
+  updateRegion: (region) => dynamoose.AWS.config.update({
+    region
+  })
 }
