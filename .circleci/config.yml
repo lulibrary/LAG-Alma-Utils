@@ -12,6 +12,9 @@ jobs:
           keys:
             - dependencies-cache-{{ checksum "package.json" }}
             - dependencies-cache
+      - restore_cache:
+          keys:
+            - dynamo-local-cache
       - run:
           name: Setup CodeClimate test-reporter
           command: |
@@ -25,6 +28,10 @@ jobs:
           paths:
             - node_modules
           key: dependencies-cache-{{ checksum "package.json" }}
+      - save_cache:
+          paths:
+            - dynamodblocal
+          key: dynamo-local-cache
       - run:
           name: Run Tests with Coverage
           command: |

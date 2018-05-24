@@ -2,6 +2,9 @@ const AWS = require('aws-sdk')
 const dynamo = new AWS.DynamoDB({ endpoint: 'http://127.0.0.1:8000', region: 'eu-west-2' })
 
 const DynamoLocal = require('dynamodb-local')
+DynamoLocal.configureInstaller({
+  installPath: './dynamodblocal'
+})
 
 const DynamoLocalPort = 8000
 
