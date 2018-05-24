@@ -44,9 +44,4 @@ const loanSchema = new Schema({
   useNativeBooleans: true
 })
 
-module.exports = {
-  model: (tableName) => dynamoose.model(tableName, loanSchema),
-  updateRegion: (region) => dynamoose.AWS.config.update({
-    region
-  })
-}
+module.exports = (tableName) => dynamoose.model(tableName, loanSchema)

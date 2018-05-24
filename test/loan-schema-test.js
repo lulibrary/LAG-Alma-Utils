@@ -6,7 +6,11 @@ const sinon = require('sinon')
 const sandbox = sinon.sandbox.create()
 
 const dynamoose = require('dynamoose')
+dynamoose.AWS.config.update({
+  region: 'eu-west-2'
+})
 dynamoose.local()
+
 const DynamoLocal = require('dynamodb-local')
 const DynamoLocalPort = 8000
 
@@ -24,7 +28,7 @@ const uuid = require('uuid/v4')
 // Module under test
 const LoanSchema = rewire('../src/loan-schema')
 
-const TestLoanModel = LoanSchema.model('loanTable')
+const TestLoanModel = LoanSchema('loanTable')
 
 describe('loan schema tests', function () {
   this.timeout(5000)
@@ -60,14 +64,6 @@ describe('loan schema tests', function () {
     })
   })
 
-  describe('update region function tests', () => {
-    it('should update the region in the AWS config', () => {
-      dynamoose.AWS.config.region = ''
-      LoanSchema.updateRegion('eu-west-2')
-      dynamoose.AWS.config.region.should.equal('eu-west-2')
-    })
-  })
-
   describe('model tests', () => {
     after(() => {
       AWS_MOCK.restore('DynamoDB')
@@ -94,7 +90,6 @@ describe('loan schema tests', function () {
 
   describe('schema tests', () => {
     it('should accept all desired parameters with correct types', function () {
-      LoanSchema.updateRegion('eu-west-2')
       const testID = uuid()
       const testLoanData = {
         loan_id: testID,

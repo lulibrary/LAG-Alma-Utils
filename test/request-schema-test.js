@@ -3,6 +3,9 @@ const docClient = new AWS.DynamoDB.DocumentClient({ endpoint: 'http://127.0.0.1:
 const dynamo = new AWS.DynamoDB({ endpoint: 'http://127.0.0.1:8000', region: 'eu-west-2' })
 
 const dynamoose = require('dynamoose')
+dynamoose.AWS.config.update({
+  region: 'eu-west-2'
+})
 dynamoose.local()
 
 const chai = require('chai')
@@ -15,8 +18,7 @@ const DynamoLocalPort = 8000
 
 // Module under test
 const RequestSchema = require('../src/request-schema')
-RequestSchema.updateRegion('eu-west-2')
-const TestRequestModel = RequestSchema.model('requestTable')
+const TestRequestModel = RequestSchema('requestTable')
 
 const uuid = require('uuid/v4')
 
@@ -41,26 +43,18 @@ describe('request schema tests', function () {
     DynamoLocal.stop(DynamoLocalPort)
   })
 
-  it('should export an object', () => {
-    (typeof RequestSchema).should.equal('object')
+  it('should export a function', () => {
+    (typeof RequestSchema).should.equal('function')
   })
 
   describe('model function tests', () => {
-    let TestRequestModel1 = RequestSchema.model('requestTable')
+    let TestRequestModel1 = RequestSchema('requestTable')
 
     it('should return a dynamoose model', () => {
       const testRequest = new TestRequestModel1({
         request_id: 'a request'
       })
       testRequest.should.be.an.instanceOf(Model)
-    })
-  })
-
-  describe('update region function tests', () => {
-    it('should update the region in the AWS config', () => {
-      dynamoose.AWS.config.region = ''
-      RequestSchema.updateRegion('eu-west-2')
-      dynamoose.AWS.config.region.should.equal('eu-west-2')
     })
   })
 
