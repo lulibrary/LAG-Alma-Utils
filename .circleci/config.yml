@@ -14,6 +14,7 @@ jobs:
             - dependencies-cache
       - restore_cache:
           keys:
+            - dynamo-local-cache-{{ checksum "dynamodblocal" }}
             - dynamo-local-cache
       - run:
           name: Setup CodeClimate test-reporter
@@ -37,7 +38,7 @@ jobs:
       - save_cache:
           paths:
             - dynamodblocal
-          key: dynamo-local-cache
+          key: dynamo-local-cache-{{ checksum "dynamodblocal" }}
 workflows:
   version: 2
   package-workflow:

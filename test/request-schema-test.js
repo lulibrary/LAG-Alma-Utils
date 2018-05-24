@@ -26,11 +26,11 @@ describe('request schema tests', function () {
     process.env.AWS_ACCESS_KEY_ID = 'key'
     process.env.AWS_SECRET_ACCESS_KEY = 'key2'
     return require('./dynamodb-local')('requestTable', 'request_id')
-      .then(() => {
-        return dynamo.listTables().promise().then((data) => {
-          console.log('Tables:', data.TableNames)
-        })
-      })
+    // .then(() => {
+    //   return dynamo.listTables().promise().then((data) => {
+    //     console.log('Tables:', data.TableNames)
+    //   })
+    // })
   })
 
   after(() => {
@@ -63,73 +63,73 @@ describe('request schema tests', function () {
     })
   })
 
-  describe('schema tests', () => {
-    it('should accept all desired parameters with correct types', function () {
-      const testID = `${uuid()}`
-      const testRequestData = {
-        request_id: testID,
-        user_primary_id: 'a user',
-        request_type: 'a type',
-        request_sub_type: {
-          value: 'a sub type',
-          desc: 'a description'
-        },
-        request_status: 'a status',
-        pickup_location: 'a location',
-        pickup_location_type: 'a location type',
-        pickup_location_library: 'a library',
-        material_type: {
-          value: 'a material',
-          desc: 'a description'
-        },
-        comment: 'a comment',
-        place_in_queue: 'a place',
-        request_date: 'a date',
-        expiry_date: 'a date',
-        barcode: 'a barcode',
-        mms_id: 'an id',
-        title: 'a book',
-        author: 'a person',
-        description: 'a description',
-        resource_sharing: 'a thing',
-        process_status: 'a status'
-      }
+  // describe('schema tests', () => {
+  //   it('should accept all desired parameters with correct types', function () {
+  //     const testID = `${uuid()}`
+  //     const testRequestData = {
+  //       request_id: testID,
+  //       user_primary_id: 'a user',
+  //       request_type: 'a type',
+  //       request_sub_type: {
+  //         value: 'a sub type',
+  //         desc: 'a description'
+  //       },
+  //       request_status: 'a status',
+  //       pickup_location: 'a location',
+  //       pickup_location_type: 'a location type',
+  //       pickup_location_library: 'a library',
+  //       material_type: {
+  //         value: 'a material',
+  //         desc: 'a description'
+  //       },
+  //       comment: 'a comment',
+  //       place_in_queue: 'a place',
+  //       request_date: 'a date',
+  //       expiry_date: 'a date',
+  //       barcode: 'a barcode',
+  //       mms_id: 'an id',
+  //       title: 'a book',
+  //       author: 'a person',
+  //       description: 'a description',
+  //       resource_sharing: 'a thing',
+  //       process_status: 'a status'
+  //     }
 
-      return new Promise((resolve, reject) => {
-        TestRequestModel.create(testRequestData, (err, data) => {
-          err ? reject(err) : resolve(data)
-        })
-      })
-        .then(() => {
-          return docClient.get({
-            Key: { request_id: testID },
-            TableName: 'requestTable'
-          }).promise().then((data) => {
-            data.Item.should.deep.equal(testRequestData)
-          })
-        })
-    })
+  //     return new Promise((resolve, reject) => {
+  //       TestRequestModel.create(testRequestData, (err, data) => {
+  //         err ? reject(err) : resolve(data)
+  //       })
+  //     })
+  //       .then(() => {
+  //         return docClient.get({
+  //           Key: { request_id: testID },
+  //           TableName: 'requestTable'
+  //         }).promise().then((data) => {
+  //           data.Item.should.deep.equal(testRequestData)
+  //         })
+  //       })
+  //   })
 
-    it('should remove parameters not in the schema', () => {
-      const testID = `${uuid()}`
-      const testRequestData = {
-        request_id: testID,
-        bad_param: 'danger'
-      }
+  //   it('should remove parameters not in the schema', () => {
+  //     const testID = `${uuid()}`
+  //     const testRequestData = {
+  //       request_id: testID,
+  //       bad_param: 'danger'
+  //     }
 
-      return new Promise((resolve, reject) => {
-        TestRequestModel.create(testRequestData, (err, data) => {
-          err ? reject(err) : resolve(data)
-        })
-      })
-        .then(() => {
-          return docClient.get({
-            Key: { request_id: testID },
-            TableName: 'requestTable'
-          }).promise().then((data) => {
-            data.Item.should.deep.equal({ request_id: testID })
-          })
-        })
-    })
-  })
+  //     return new Promise((resolve, reject) => {
+  //       TestRequestModel.create(testRequestData, (err, data) => {
+  //         err ? reject(err) : resolve(data)
+  //       })
+  //     })
+  //       .then(() => {
+  //         return docClient.get({
+  //           Key: { request_id: testID },
+  //           TableName: 'requestTable'
+  //         }).promise().then((data) => {
+  //           data.Item.should.deep.equal({ request_id: testID })
+  //         })
+  //       })
+  //   })
+  // })
 })
