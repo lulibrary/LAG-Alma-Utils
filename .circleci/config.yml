@@ -1,4 +1,7 @@
 version: 2
+machine:
+  hosts:
+    localhost: 127.0.0.1
 jobs:
   build:
     docker:
