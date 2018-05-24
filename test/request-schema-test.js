@@ -26,11 +26,11 @@ describe('request schema tests', function () {
     process.env.AWS_ACCESS_KEY_ID = 'key'
     process.env.AWS_SECRET_ACCESS_KEY = 'key2'
     return require('./dynamodb-local')('requestTable', 'request_id')
-      .then(() => {
-        return dynamo.listTables().promise().then((data) => {
-          console.log('Tables:', data.TableNames)
-        })
-      })
+    // .then(() => {
+    //   return dynamo.listTables().promise().then((data) => {
+    //     console.log('Tables:', data.TableNames)
+    //   })
+    // })
   })
 
   after(() => {
