@@ -28,16 +28,16 @@ jobs:
           paths:
             - node_modules
           key: dependencies-cache-{{ checksum "package.json" }}
-      - save_cache:
-          paths:
-            - dynamodblocal
-          key: dynamo-local-cache
       - run:
           name: Run Tests with Coverage
           command: |
             ./cc-test-reporter before-build
             npm test
             ./cc-test-reporter after-build --exit-code $?
+      - save_cache:
+          paths:
+            - dynamodblocal
+          key: dynamo-local-cache
 workflows:
   version: 2
   package-workflow:
