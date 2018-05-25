@@ -185,7 +185,7 @@ describe('user schema tests', () => {
       return testUser.getData(testLoanModel, testUser.loan_ids, 'loan_id')
         .then((loans) => {
           return loans.forEach((loan) => {
-            loan.should.be.an.instanceOf(Model)
+            loan.should.be.an.instanceOf(testLoanModel)
           })
         })
     })
