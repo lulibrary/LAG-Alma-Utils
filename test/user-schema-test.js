@@ -152,45 +152,6 @@ describe('user schema tests', () => {
     })
   })
 
-  describe('get data method tests', function () {
-    before(() => {
-      AWS_MOCK.mock('DynamoDB', 'describeTable', { Table: { TableStatus: 'ACTIVE' } })
-    })
-
-    after(() => {
-      AWS_MOCK.restore('DynamoDB')
-    })
-
-    it('should return an array of instances of the supplied model', () => {
-      const LocalUserModel = UserSchema('cache-api-userCacheTable-dev')
-      let testUser = new LocalUserModel({
-        primary_id: 'test user',
-        loan_ids: ['loan1', 'loan2']
-      })
-
-      AWS_MOCK.mock('DynamoDB', 'batchGetItem', { Responses: { 'cache-api-loanCacheTable-dev': [
-        {
-          loan_id: 'loan1'
-        },
-        {
-          loan_id: 'loan2'
-        }
-      ] } })
-
-      let testLoanModel = LoanSchema('cache-api-loanCacheTable-dev')
-
-      // return dynamo.describeTable({ TableName: 'cache-api-loanCacheTable-dev' }).promise().then(console.log)
-      // return testLoanModel.create({ loan_id: 'loan1' })
-
-      return testUser.getData(testLoanModel, testUser.loan_ids, 'loan_id')
-        .then((loans) => {
-          return loans.forEach((loan) => {
-            loan.should.be.an.instanceOf(testLoanModel)
-          })
-        })
-    })
-  })
-
   describe('get loan data tests', () => {
     it('should create an empty array of loans if no loan ids are present', () => {
       let testUser = new TestUserModel({
