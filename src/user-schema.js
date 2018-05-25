@@ -34,9 +34,10 @@ const userSchema = new Schema({
 }, {})
 
 userSchema.methods = {
-  getData: function (model, source, destination, tableKey) {
+  getData: function (model, source, tableKey) {
     const batches = _chunk(source, batchGetLimit)
     let promises = []
+    let retrievedData = []
 
     batches.forEach((batch) => {
       const batchKeys = batch.map((id) => {
@@ -46,21 +47,25 @@ userSchema.methods = {
       })
       promises.push(model.batchGet(batchKeys)
         .then(data => {
-          Array.prototype.push.apply(destination, data)
+          retrievedData = retrievedData.concat(data)
         }))
     })
 
-    return Promise.all(promises).then(() => destination)
+    return Promise.all(promises).then(() => retrievedData)
   },
 
   getLoanData: function (loanModel) {
-    this.loans = []
-    return this.getData(loanModel, this.loan_ids, this.loans, 'loan_id')
+    return this.getData(loanModel, this.loan_ids, 'loan_id')
+      .then((loanData) => {
+        this.loans = loanData
+      })
   },
 
   getRequestData: function (requestModel) {
-    this.requests = []
-    return this.getData(requestModel, this.request_ids, this.requests, 'request_id')
+    return this.getData(requestModel, this.request_ids, 'request_id')
+      .then((requestData) => {
+        this.requests = requestData
+      })
   },
 
   addLoan: function (loanID) {

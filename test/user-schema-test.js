@@ -153,7 +153,9 @@ describe('user schema tests', () => {
 
       should.not.exist(testUser.loans)
 
-      return testUser.getLoanData(null).should.eventually.deep.equal([])
+      return testUser.getLoanData(null).then(() => {
+        testUser.loans.should.deep.equal([])
+      })
     })
 
     it('should call batchGet on the Loan model with an array of Keys', () => {
@@ -251,7 +253,9 @@ describe('user schema tests', () => {
 
       should.not.exist(testUser.requests)
 
-      return testUser.getRequestData(null).should.eventually.deep.equal([])
+      return testUser.getRequestData(null).then(() => {
+        testUser.requests.should.deep.equal([])
+      })
     })
 
     it('should call batchGet on the Request model with an array of Keys', () => {
