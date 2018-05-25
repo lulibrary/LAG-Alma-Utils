@@ -84,4 +84,4 @@ userSchema.methods = {
   }
 }
 
-module.exports = (userTable) => dynamoose.model(userTable.name, userSchema)
+module.exports = (userTable) => dynamoose.model(userTable, userSchema)

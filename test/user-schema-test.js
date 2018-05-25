@@ -18,10 +18,7 @@ const RequestSchema = require('../src/request-schema')
 // Module under test
 const UserSchema = rewire('../src/user-schema')
 
-const testUserTable = {
-  name: 'usertable',
-  region: 'eu-west-2'
-}
+const testUserTable = 'usertable'
 
 const TestUserModel = UserSchema(testUserTable)
 
