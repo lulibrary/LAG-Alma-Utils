@@ -2,7 +2,7 @@ const dynamoose = require('dynamoose')
 const moment = require('moment')
 const _chunk = require('lodash.chunk')
 
-const batchGetLimit = 25
+const DYNAMO_DB_BATCH_GET_LIMIT = 25
 
 dynamoose.setDefaults({
   create: false,
@@ -34,35 +34,37 @@ const userSchema = new Schema({
 }, {})
 
 userSchema.methods = {
-  getData: function (model, source, tableKey) {
-    const batches = _chunk(source, batchGetLimit)
-    let promises = []
+  populateArrayFromModel: function (model, sourceKeys, modelTableKey) {
+    const sourceKeyBatches = _chunk(sourceKeys, DYNAMO_DB_BATCH_GET_LIMIT)
+    let resolvingPromises = []
     let retrievedData = []
 
-    batches.forEach((batch) => {
-      const batchKeys = batch.map((id) => {
-        let getMethodKey = {}
-        getMethodKey[tableKey] = id
-        return getMethodKey
+    sourceKeyBatches.forEach((batch) => {
+      // Create an array of DynamoDB key objects
+      const batchGetKeys = batch.map((id) => {
+        let dynamoKeyObject = {}
+        dynamoKeyObject[modelTableKey] = id
+        return dynamoKeyObject
       })
-      promises.push(model.batchGet(batchKeys)
+      // Execute batchGet request
+      resolvingPromises.push(model.batchGet(batchGetKeys)
         .then(data => {
           retrievedData = retrievedData.concat(data)
         }))
     })
 
-    return Promise.all(promises).then(() => retrievedData)
+    return Promise.all(resolvingPromises).then(() => retrievedData)
   },
 
-  getLoanData: function (loanModel) {
-    return this.getData(loanModel, this.loan_ids, 'loan_id')
+  populateLoans: function (loanModel) {
+    return this.populateArrayFromModel(loanModel, this.loan_ids, 'loan_id')
       .then((loanData) => {
         this.loans = loanData
       })
   },
 
-  getRequestData: function (requestModel) {
-    return this.getData(requestModel, this.request_ids, 'request_id')
+  populateRequests: function (requestModel) {
+    return this.populateArrayFromModel(requestModel, this.request_ids, 'request_id')
       .then((requestData) => {
         this.requests = requestData
       })

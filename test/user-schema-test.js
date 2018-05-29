@@ -161,7 +161,7 @@ describe('user schema tests', () => {
 
       should.not.exist(testUser.loans)
 
-      return testUser.getLoanData(null).then(() => {
+      return testUser.populateLoans(null).then(() => {
         testUser.loans.should.deep.equal([])
       })
     })
@@ -184,7 +184,7 @@ describe('user schema tests', () => {
         loan_id: '3'
       }]
 
-      return testUser.getLoanData(testLoanModel).then(() => {
+      return testUser.populateLoans(testLoanModel).then(() => {
         batchGetStub.should.have.been.calledWith(expected)
       })
     })
@@ -199,7 +199,7 @@ describe('user schema tests', () => {
       let batchGetStub = sandbox.stub(testLoanModel, 'batchGet')
       batchGetStub.resolves([])
 
-      return testUser.getLoanData(testLoanModel).then(() => {
+      return testUser.populateLoans(testLoanModel).then(() => {
         batchGetStub.should.have.been.calledTwice
       })
     })
@@ -225,7 +225,7 @@ describe('user schema tests', () => {
       let batchGetStub = sandbox.stub(testLoanModel, 'batchGet')
       batchGetStub.resolves(expected)
 
-      return testUser.getLoanData(testLoanModel).then(() => {
+      return testUser.populateLoans(testLoanModel).then(() => {
         testUser.loans.should.deep.equal(expected)
       })
     })
@@ -246,7 +246,7 @@ describe('user schema tests', () => {
       batchGetStub.onCall(0).resolves(return1)
       batchGetStub.onCall(1).resolves(return2)
 
-      return testUser.getLoanData(testLoanModel).then(() => {
+      return testUser.populateLoans(testLoanModel).then(() => {
         testUser.loans.should.deep.equal(expected)
       })
     })
@@ -261,7 +261,7 @@ describe('user schema tests', () => {
 
       should.not.exist(testUser.requests)
 
-      return testUser.getRequestData(null).then(() => {
+      return testUser.populateRequests(null).then(() => {
         testUser.requests.should.deep.equal([])
       })
     })
@@ -284,7 +284,7 @@ describe('user schema tests', () => {
         request_id: '3'
       }]
 
-      return testUser.getRequestData(testRequestModel).then(() => {
+      return testUser.populateRequests(testRequestModel).then(() => {
         batchGetStub.should.have.been.calledWith(expected)
       })
     })
@@ -299,7 +299,7 @@ describe('user schema tests', () => {
       let batchGetStub = sandbox.stub(testRequestModel, 'batchGet')
       batchGetStub.resolves([])
 
-      return testUser.getRequestData(testRequestModel).then(() => {
+      return testUser.populateRequests(testRequestModel).then(() => {
         batchGetStub.should.have.been.calledTwice
       })
     })
@@ -325,7 +325,7 @@ describe('user schema tests', () => {
       let batchGetStub = sandbox.stub(testRequestModel, 'batchGet')
       batchGetStub.resolves(expected)
 
-      return testUser.getRequestData(testRequestModel).then(() => {
+      return testUser.populateRequests(testRequestModel).then(() => {
         testUser.requests.should.deep.equal(expected)
       })
     })
@@ -346,7 +346,7 @@ describe('user schema tests', () => {
       batchGetStub.onCall(0).resolves(return1)
       batchGetStub.onCall(1).resolves(return2)
 
-      return testUser.getRequestData(testRequestModel).then(() => {
+      return testUser.populateRequests(testRequestModel).then(() => {
         testUser.requests.should.deep.equal(expected)
       })
     })
