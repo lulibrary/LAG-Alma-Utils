@@ -59,6 +59,3 @@ typings/
 
 # DynamoDB Local directory
 dynamodblocal
-
-# vscode
-.vscode
