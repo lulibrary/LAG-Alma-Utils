@@ -37,7 +37,9 @@ const userSchema = new Schema({
     type: Number,
     default: (model) => calculateExpiry(expiryOffset)
   }
-}, {})
+}, {
+  useDocumentTypes: true
+})
 
 userSchema.methods = {
   populateArrayFromModel: function (model, sourceKeys, modelTableKey) {
