@@ -25,8 +25,14 @@ const userSchema = new Schema({
     type: String,
     hashKey: true
   },
-  loan_ids: [String],
-  request_ids: [String],
+  loan_ids: {
+    type: 'list',
+    list: [String]
+  },
+  request_ids: {
+    type: 'list',
+    list: [String]
+  },
   expiry_date: {
     type: Number,
     default: (model) => calculateExpiry(expiryOffset)
