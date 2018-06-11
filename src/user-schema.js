@@ -91,7 +91,20 @@ userSchema.methods = {
       this[field].push(value)
     }
     return this
+  },
+
+  delete: function (field, value) {
+    this[field] = this[field].filter(v => v !== value)
+  },
+
+  deleteLoan: function (loanID) {
+    return this.delete('loan_ids', loanID)
+  },
+
+  deleteRequest: function (requestID) {
+    return this.delete('request_ids', requestID)
   }
+
 }
 
 module.exports = (userTable) => dynamoose.model(userTable, userSchema)
