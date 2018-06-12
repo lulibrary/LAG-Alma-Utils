@@ -93,16 +93,17 @@ userSchema.methods = {
     return this
   },
 
-  delete: function (field, value) {
+  deleteItem: function (field, value) {
     this[field] = this[field].filter(v => v !== value)
+    return this
   },
 
   deleteLoan: function (loanID) {
-    return this.delete('loan_ids', loanID)
+    return this.deleteItem('loan_ids', loanID)
   },
 
   deleteRequest: function (requestID) {
-    return this.delete('request_ids', requestID)
+    return this.deleteItem('request_ids', requestID)
   }
 
 }

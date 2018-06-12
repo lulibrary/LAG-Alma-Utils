@@ -352,7 +352,7 @@ describe('user schema tests', () => {
     })
   })
 
-  describe('delete method tests', () => {
+  describe('deleteItem method tests', () => {
     it('should remove all matching values from the array', () => {
       let testUser = new TestUserModel({
         primary_id: 'test user',
@@ -361,7 +361,7 @@ describe('user schema tests', () => {
 
       let expected = new Array(20).fill(0).map((value, index) => (index % 2).toString())
 
-      testUser.delete('request_ids', '2')
+      testUser.deleteItem('request_ids', '2')
 
       testUser.request_ids.should.deep.equal(expected)
     })
@@ -374,20 +374,30 @@ describe('user schema tests', () => {
 
       let expected = new Array(30).fill(0).map((value, index) => (index % 3).toString())
 
-      testUser.delete('request_ids', '4')
+      testUser.deleteItem('request_ids', '4')
 
       testUser.request_ids.should.deep.equal(expected)
+    })
+
+    it('should return the user object', () => {
+      let testUser = new TestUserModel({
+        primary_id: 'test user',
+        request_ids: new Array(30).fill(0).map((value, index) => (index % 3).toString())
+      })
+
+      let user = testUser.deleteItem('request_ids', '2')
+      user.should.deep.equal(testUser)
     })
   })
 
   describe('delete loan method tests', () => {
-    it('should call User#delete with the loan ID and the `loan_ids` field', () => {
+    it('should call User#deleteItem with the loan ID and the `loan_ids` field', () => {
       let testUser = new TestUserModel({
         primary_id: 'test user',
         loan_ids: new Array(30).fill(0).map((value, index) => (index % 3).toString())
       })
 
-      const deleteStub = sandbox.stub(testUser, 'delete')
+      const deleteStub = sandbox.stub(testUser, 'deleteItem')
 
       testUser.deleteLoan('loan')
 
@@ -396,13 +406,13 @@ describe('user schema tests', () => {
   })
 
   describe('delete request method tests', () => {
-    it('should call User#delete with the request ID and the `request_ids` field', () => {
+    it('should call User#deleteItem with the request ID and the `request_ids` field', () => {
       let testUser = new TestUserModel({
         primary_id: 'test user',
         request_ids: new Array(30).fill(0).map((value, index) => (index % 3).toString())
       })
 
-      const deleteStub = sandbox.stub(testUser, 'delete')
+      const deleteStub = sandbox.stub(testUser, 'deleteItem')
 
       testUser.deleteRequest('request')
 
