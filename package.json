@@ -40,11 +40,8 @@
     "uuid": "^3.2.1"
   },
   "dependencies": {
-    "@lulibrary/lag-utils": "git+ssh://git@github.com/lulibrary/LAG-Utils.git#v0.3.2",
     "dynamoose": "^0.8.7",
     "lodash.chunk": "^4.2.0",
-    "lodash.merge": "^4.6.1",
-    "lodash.pick": "^4.4.0",
     "moment": "^2.22.1"
   }
 }
