@@ -1,10 +1,20 @@
 const AWS_MOCK = require('aws-sdk-mock')
 const AWS = require('aws-sdk')
+
+// **** DynamoDB
+const docClient = new AWS.DynamoDB.DocumentClient({ endpoint: 'http://127.0.0.1:8000', region: 'eu-west-2' })
+const dynamo = new AWS.DynamoDB({ endpoint: 'http://127.0.0.1:8000', region: 'eu-west-2' })
+
 const dynamoose = require('dynamoose')
 dynamoose.AWS.config.update({
   region: 'eu-west-2'
 })
+dynamoose.local()
+const DynamoLocal = require('dynamodb-local')
+const DynamoLocalPort = 8000
+// ****
 
+// **** Test Libraries
 const sinon = require('sinon')
 const sandbox = sinon.sandbox.create()
 
@@ -14,7 +24,9 @@ chai.use(chaiAsPromised)
 const sinonChai = require('sinon-chai')
 chai.use(sinonChai)
 const should = chai.should()
+// ****
 
+const uuid = require('uuid/v4')
 const rewire = require('rewire')
 
 const LoanSchema = require('../src/loan-schema')
@@ -29,7 +41,27 @@ const TestUserModel = UserSchema(testUserTable)
 
 const Model = require('dynamoose/lib/Model')
 
-describe('user schema tests', () => {
+describe('user schema tests', function () {
+  this.timeout(5000)
+  before(function () {
+    this.timeout(25000)
+    process.env.AWS_ACCESS_KEY_ID = 'key'
+    process.env.AWS_SECRET_ACCESS_KEY = 'key2'
+    return require('./dynamodb-local')('usertable', 'primary_id')
+      .then(() => {
+        return dynamo.listTables().promise().then((data) => {
+          console.log('Tables:', data.TableNames)
+        })
+      })
+  })
+
+  after(() => {
+    console.log('Tests complete')
+    delete process.env.AWS_ACCESS_KEY_ID
+    delete process.env.AWS_SECRET_ACCESS_KEY
+    DynamoLocal.stop(DynamoLocalPort)
+  })
+
   afterEach(() => {
     sandbox.restore()
   })
@@ -77,6 +109,54 @@ describe('user schema tests', () => {
       testUser.save()
 
       testUser.expiry_date.should.equal(expected)
+    })
+  })
+
+  describe('getValid method tests', () => {
+    it('should return a record with an expiry date in the future', () => {
+      const stubTime = 0
+
+      const testUserID = `test_user_${uuid()}`
+
+      return new TestUserModel({
+        primary_id: testUserID,
+        loan_ids: [],
+        expiry_date: 1000
+      }).save()
+        .then(() => {
+          sandbox.stub(Date, 'now').returns(stubTime)
+
+          return TestUserModel.getValid(testUserID)
+            .then(user => {
+              user.should.be.an('object')
+              user.primary_id.should.equal(testUserID)
+            })
+        })
+    })
+
+    it('should not return a record with an expiry date in the past', () => {
+      const stubTime = 1000
+
+      const testUserID = `test_user_${uuid()}`
+
+      return new TestUserModel({
+        primary_id: testUserID,
+        loan_ids: [],
+        expiry_date: 0
+      }).save()
+        .then(() => {
+          sandbox.stub(Date, 'now').returns(stubTime)
+
+          return TestUserModel.getValid(testUserID)
+            .should.eventually.deep.equal(null)
+        })
+    })
+
+    it('should not return a record if no matching record exists', () => {
+      const testUserID = `test_user_${uuid()}`
+
+      return TestUserModel.getValid(testUserID)
+        .should.eventually.deep.equal(null)
     })
   })
 

@@ -41,6 +41,15 @@ const userSchema = new Schema({
   useDocumentTypes: true
 })
 
+userSchema.statics.getValid = function (userID) {
+  return this.get(userID)
+    .then(user => {
+      return (user && user.expiry_date >= moment().unix())
+        ? user
+        : null
+    })
+}
+
 userSchema.methods = {
   populateArrayFromModel: function (model, sourceKeys, modelTableKey) {
     const sourceKeyBatches = _chunk(sourceKeys, DYNAMO_DB_BATCH_GET_LIMIT)
