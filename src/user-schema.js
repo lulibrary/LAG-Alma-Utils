@@ -2,6 +2,8 @@ const dynamoose = require('dynamoose')
 const moment = require('moment')
 const _chunk = require('lodash.chunk')
 
+const getValid = require('./get-valid')
+
 const DYNAMO_DB_BATCH_GET_LIMIT = 25
 
 dynamoose.setDefaults({
@@ -40,6 +42,8 @@ const userSchema = new Schema({
 }, {
   useDocumentTypes: true
 })
+
+userSchema.statics.getValid = getValid
 
 userSchema.methods = {
   populateArrayFromModel: function (model, sourceKeys, modelTableKey) {

@@ -1,6 +1,8 @@
 const dynamoose = require('dynamoose')
 const moment = require('moment')
 
+const getValid = require('./get-valid')
+
 dynamoose.setDefaults({
   create: false,
   waitForActiveTimeout: 5000
@@ -43,5 +45,7 @@ const loanSchema = new Schema({
   useDocumentTypes: true,
   useNativeBooleans: true
 })
+
+loanSchema.statics.getValid = getValid
 
 module.exports = (tableName) => dynamoose.model(tableName, loanSchema)

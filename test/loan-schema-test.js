@@ -47,6 +47,10 @@ describe('loan schema tests', function () {
     DynamoLocal.stop(DynamoLocalPort)
   })
 
+  afterEach(() => {
+    sandbox.restore()
+  })
+
   describe('calculate expiry tests', () => {
     const calculateExpiry = LoanSchema.__get__('calculateExpiry')
 
@@ -159,6 +163,52 @@ describe('loan schema tests', function () {
             data.Item.should.deep.equal({ loan_id: testID, expiry_date: 0 })
           })
         })
+    })
+
+    describe('getValid method tests', () => {
+      it('should return a record with an expiry date in the future', () => {
+        const stubTime = 0
+
+        const testLoanID = `test_loan_${uuid()}`
+
+        return new TestLoanModel({
+          loan_id: testLoanID,
+          expiry_date: 1000
+        }).save()
+          .then(() => {
+            sandbox.stub(Date, 'now').returns(stubTime)
+
+            return TestLoanModel.getValid(testLoanID)
+              .then(user => {
+                user.should.be.an('object')
+                user.loan_id.should.equal(testLoanID)
+              })
+          })
+      })
+
+      it('should not return a record with an expiry date in the past', () => {
+        const stubTime = 1000
+
+        const testLoanID = `test_loan_${uuid()}`
+
+        return new TestLoanModel({
+          loan_id: testLoanID,
+          expiry_date: 0
+        }).save()
+          .then(() => {
+            sandbox.stub(Date, 'now').returns(stubTime)
+
+            return TestLoanModel.getValid(testLoanID)
+              .should.eventually.deep.equal(null)
+          })
+      })
+
+      it('should not return a record if no matching record exists', () => {
+        const testLoanID = `test_loan_${uuid()}`
+
+        return TestLoanModel.getValid(testLoanID)
+          .should.eventually.deep.equal(null)
+      })
     })
   })
 })

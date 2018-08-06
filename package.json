@@ -37,7 +37,7 @@
     "rewire": "^4.0.1",
     "sinon": "^4.5.0",
     "sinon-chai": "^3.0.0",
-    "uuid": "^3.2.1"
+    "uuid": "^3.3.2"
   },
   "dependencies": {
     "dynamoose": "^0.8.7",
