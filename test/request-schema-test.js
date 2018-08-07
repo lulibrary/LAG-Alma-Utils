@@ -2,6 +2,9 @@ const AWS = require('aws-sdk')
 const docClient = new AWS.DynamoDB.DocumentClient({ endpoint: 'http://127.0.0.1:8000', region: 'eu-west-2' })
 const dynamo = new AWS.DynamoDB({ endpoint: 'http://127.0.0.1:8000', region: 'eu-west-2' })
 
+const sinon = require('sinon')
+const sandbox = sinon.createSandbox()
+
 const dynamoose = require('dynamoose')
 dynamoose.AWS.config.update({
   region: 'eu-west-2'
@@ -9,6 +12,8 @@ dynamoose.AWS.config.update({
 dynamoose.local()
 
 const chai = require('chai')
+const sinonChai = require('sinon-chai')
+chai.use(sinonChai)
 chai.should()
 
 const Model = require('dynamoose/lib/Model')
@@ -16,8 +21,11 @@ const Model = require('dynamoose/lib/Model')
 const DynamoLocal = require('dynamodb-local')
 const DynamoLocalPort = 8000
 
+const rewire = require('rewire')
+let wires = []
+
 // Module under test
-const RequestSchema = require('../src/request-schema')
+const RequestSchema = rewire('../src/request-schema')
 const TestRequestModel = RequestSchema('requestTable')
 
 const uuid = require('uuid/v4')
@@ -43,6 +51,12 @@ describe('request schema tests', function () {
     DynamoLocal.stop(DynamoLocalPort)
   })
 
+  afterEach(() => {
+    sandbox.restore()
+    wires.forEach(wire => wire())
+    wires = []
+  })
+
   it('should export a function', () => {
     (typeof RequestSchema).should.equal('function')
   })
@@ -60,6 +74,9 @@ describe('request schema tests', function () {
 
   describe('schema tests', () => {
     it('should accept all desired parameters with correct types', function () {
+      const dateStub = sandbox.stub(Date, 'now')
+      dateStub.returns(0)
+
       const testID = `${uuid()}`
       const testRequestData = {
         request_id: testID,
@@ -100,12 +117,15 @@ describe('request schema tests', function () {
             Key: { request_id: testID },
             TableName: 'requestTable'
           }).promise().then((data) => {
-            data.Item.should.deep.equal(testRequestData)
+            data.Item.should.deep.equal(Object.assign(testRequestData, { record_expiry_date: 2 * 7 * 24 * 60 * 60 }))
           })
         })
     })
 
     it('should remove parameters not in the schema', () => {
+      const dateStub = sandbox.stub(Date, 'now')
+      dateStub.returns(0)
+
       const testID = `${uuid()}`
       const testRequestData = {
         request_id: testID,
@@ -122,8 +142,29 @@ describe('request schema tests', function () {
             Key: { request_id: testID },
             TableName: 'requestTable'
           }).promise().then((data) => {
-            data.Item.should.deep.equal({ request_id: testID })
+            data.Item.should.deep.equal({
+              request_id: testID,
+              record_expiry_date: 2 * 7 * 24 * 60 * 60
+            })
           })
+        })
+    })
+  })
+
+  describe('getValid method tests', () => {
+    it('should call the getValid module method with the provided ID and the correct expiry field name', () => {
+      const correctExpiryField = 'record_expiry_date'
+      const testRequestId = uuid()
+
+      const getValidStub = sandbox.stub()
+      getValidStub.resolves()
+      wires.push(
+        RequestSchema.__set__('getValid', getValidStub)
+      )
+
+      return TestRequestModel.getValid(testRequestId)
+        .then(() => {
+          getValidStub.should.have.been.calledWith(testRequestId, correctExpiryField)
         })
     })
   })
