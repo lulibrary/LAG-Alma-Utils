@@ -1,5 +1,7 @@
 const dynamoose = require('dynamoose')
 
+const getValid = require('./get-valid')
+
 dynamoose.setDefaults({
   create: false,
   waitForActiveTimeout: 5000
@@ -29,9 +31,15 @@ const feeSchema = new Schema({
   transactions: {
     type: 'list',
     list: [Object]
+  },
+  expiry_date: {
+    type: Number,
+    default: () => Math.floor(Date.now() / 1000) + 2 * 7 * 24 * 60 * 60
   }
 }, {
   useDocumentTypes: true
 })
+
+feeSchema.statics.getValid = getValid
 
 module.exports = (tableName) => dynamoose.model(tableName, feeSchema)

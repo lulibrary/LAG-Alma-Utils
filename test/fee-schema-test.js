@@ -47,8 +47,15 @@ describe('fee schema tests', function () {
     DynamoLocal.stop(DynamoLocalPort)
   })
 
+  afterEach(() => {
+    sandbox.restore()
+  })
+
   describe('schema tests', () => {
     it('should accept all desired parameters with correct types', function () {
+      const dateStub = sandbox.stub(Date, 'now')
+      dateStub.returns(1000000)
+
       const testID = uuid()
       const testFeeData = {
         id: testID,
@@ -103,7 +110,8 @@ describe('fee schema tests', function () {
         }, {
           transaction: 'potato',
           thing2: 'things'
-        }]
+        }],
+        expiry_date: 1000 + 2 * 7 * 24 * 60 * 60
       }
 
       return new Promise((resolve, reject) => {
@@ -120,6 +128,9 @@ describe('fee schema tests', function () {
     })
 
     it('should remove parameters not in the schema', () => {
+      const dateStub = sandbox.stub(Date, 'now')
+      dateStub.returns(0)
+
       const testID = `${uuid()}`
       const testFeeData = {
         id: testID,
@@ -136,7 +147,10 @@ describe('fee schema tests', function () {
             Key: { id: testID },
             TableName: 'feeTable'
           }).promise().then((data) => {
-            data.Item.should.deep.equal({ id: testID })
+            data.Item.should.deep.equal({
+              id: testID,
+              expiry_date: 2 * 7 * 24 * 60 * 60
+            })
           })
         })
     })
