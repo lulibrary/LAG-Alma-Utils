@@ -544,4 +544,19 @@ describe('user schema tests', function () {
       deleteStub.should.have.been.calledWithExactly('request_ids', 'request')
     })
   })
+
+  describe('delete fee method tests', () => {
+    it('should call User#deleteItem with the fee ID and the `fee_ids` field', () => {
+      let testUser = new TestUserModel({
+        primary_id: 'test user',
+        fee_ids: new Array(30).fill(0).map((value, index) => (index % 3).toString())
+      })
+
+      const deleteStub = sandbox.stub(testUser, 'deleteItem')
+
+      testUser.deleteFee('test-fee')
+
+      deleteStub.should.have.been.calledWithExactly('fee_ids', 'test-fee')
+    })
+  })
 })
