@@ -127,6 +127,37 @@ describe('fee schema tests', function () {
         })
     })
 
+    it('should allow for empty transaction arrays', () => {
+      const dateStub = sandbox.stub(Date, 'now')
+      dateStub.returns(0)
+
+      const testID = uuid()
+      const testFeeData = {
+        id: testID,
+        user_primary_id: 'a user',
+        transactions: []
+      }
+
+      const expected = {
+        id: testID,
+        user_primary_id: 'a user',
+        transactions: [],
+        expiry_date: 2 * 7 * 24 * 60 * 60
+      }
+
+      return new Promise((resolve, reject) => {
+        TestFeeModel.create(testFeeData, (err, data) => {
+          err ? reject(err) : resolve(data)
+        })
+      })
+        .then(() => {
+          return TestFeeModel.get(testID)
+            .then((data) => {
+              Object.assign({}, data).should.deep.equal(expected)
+            })
+        })
+    })
+
     it('should remove parameters not in the schema', () => {
       const dateStub = sandbox.stub(Date, 'now')
       dateStub.returns(0)

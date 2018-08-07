@@ -29,11 +29,18 @@ const userSchema = new Schema({
   },
   loan_ids: {
     type: 'list',
-    list: [String]
+    list: [String],
+    default: []
   },
   request_ids: {
     type: 'list',
-    list: [String]
+    list: [String],
+    default: []
+  },
+  fee_ids: {
+    type: 'list',
+    list: [String],
+    default: []
   },
   expiry_date: {
     type: Number,
@@ -90,6 +97,10 @@ userSchema.methods = {
     return this.add('request_ids', requestID)
   },
 
+  addFee: function (feeID) {
+    return this.add('fee_ids', feeID)
+  },
+
   add: function (field, value) {
     if (!this[field].includes(value)) {
       this[field].push(value)
@@ -108,6 +119,10 @@ userSchema.methods = {
 
   deleteRequest: function (requestID) {
     return this.deleteItem('request_ids', requestID)
+  },
+
+  deleteFee: function (feeID) {
+    return this.deleteItem('fee_ids', feeID)
   }
 
 }

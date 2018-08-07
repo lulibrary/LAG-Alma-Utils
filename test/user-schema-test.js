@@ -112,6 +112,27 @@ describe('user schema tests', function () {
     })
   })
 
+  describe('schema tests', () => {
+    it('should default the loan_ids, request_ids and fee_ids to empty arrays', () => {
+      const testUserID = uuid()
+      sandbox.stub(Date, 'now').returns(0)
+
+      return new TestUserModel({
+        primary_id: testUserID
+      }).save()
+        .then(() => {
+          TestUserModel.get(testUserID)
+            .should.eventually.deep.equal({
+              primary_id: testUserID,
+              expiry_date: 2 * 60 * 60,
+              loan_ids: [],
+              request_ids: [],
+              fee_ids: []
+            })
+        })
+    })
+  })
+
   describe('getValid method tests', () => {
     it('should return a record with an expiry date in the future', () => {
       const stubTime = 0
@@ -209,7 +230,7 @@ describe('user schema tests', function () {
   })
 
   describe('add request method tests', () => {
-    it('should add a request to the user if it does not already have the loan', () => {
+    it('should add a request to the user if it does not already have the request', () => {
       let testUser = new TestUserModel({
         primary_id: 'test user',
         request_ids: []
@@ -229,6 +250,30 @@ describe('user schema tests', function () {
       testUser.addRequest('a request')
 
       testUser.request_ids.should.deep.equal(['a request'])
+    })
+  })
+
+  describe('add fee method tests', () => {
+    it('should add a fee to the user if it does not already have the fee', () => {
+      let testUser = new TestUserModel({
+        primary_id: 'test user',
+        fee_ids: []
+      })
+
+      testUser.addFee('a fee')
+
+      testUser.fee_ids.should.include('a fee')
+    })
+
+    it('should not add a fee if the user already has the fee', () => {
+      let testUser = new TestUserModel({
+        primary_id: 'test user',
+        fee_ids: ['a fee']
+      })
+
+      testUser.addFee('a fee')
+
+      testUser.fee_ids.should.deep.equal(['a fee'])
     })
   })
 
