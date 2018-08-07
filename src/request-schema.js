@@ -1,6 +1,7 @@
 const dynamoose = require('dynamoose')
 
 const getValid = require('./get-valid')
+const defaultExpiry = require('./default-expiry')
 
 dynamoose.setDefaults({
   create: false,
@@ -45,10 +46,7 @@ const requestSchema = new Schema({
   description: String,
   resource_sharing: String,
   process_status: String,
-  record_expiry_date: {
-    type: Number,
-    default: () => Math.floor(Date.now() / 1000) + 2 * 7 * 24 * 60 * 60
-  }
+  record_expiry_date: defaultExpiry
 }, {
   useDocumentTypes: true
 })

@@ -1,6 +1,7 @@
 const dynamoose = require('dynamoose')
 
 const getValid = require('./get-valid')
+const defaultExpiry = require('./default-expiry')
 
 dynamoose.setDefaults({
   create: false,
@@ -32,10 +33,7 @@ const feeSchema = new Schema({
     type: 'list',
     list: [Object]
   },
-  expiry_date: {
-    type: Number,
-    default: () => Math.floor(Date.now() / 1000) + 2 * 7 * 24 * 60 * 60
-  }
+  expiry_date: defaultExpiry
 }, {
   useDocumentTypes: true
 })
