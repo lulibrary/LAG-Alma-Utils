@@ -51,6 +51,8 @@ const requestSchema = new Schema({
   useDocumentTypes: true
 })
 
-requestSchema.statics.getValid = (requestID) => getValid(requestID, 'record_expiry_date')
+requestSchema.statics.getValid = function (requestID) {
+  return getValid.call(this, requestID, 'record_expiry_date')
+}
 
 module.exports = (tableName) => dynamoose.model(tableName, requestSchema)
