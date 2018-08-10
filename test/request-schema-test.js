@@ -167,5 +167,20 @@ describe('request schema tests', function () {
           getValidStub.should.have.been.calledWith(testRequestId, correctExpiryField)
         })
     })
+
+    it('should call the getValid method with the correct `this` context', () => {
+      const testRequestId = uuid()
+
+      const getValidStub = sandbox.stub()
+      getValidStub.resolves()
+      wires.push(
+        RequestSchema.__set__('getValid', getValidStub)
+      )
+
+      return TestRequestModel.getValid(testRequestId)
+        .then(() => {
+          getValidStub.should.have.been.calledOn(TestRequestModel)
+        })
+    })
   })
 })
