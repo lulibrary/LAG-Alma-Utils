@@ -25,7 +25,8 @@ const calculateExpiry = (offset) => {
 const userSchema = new Schema({
   primary_id: {
     type: String,
-    hashKey: true
+    hashKey: true,
+    lowercase: true
   },
   loan_ids: {
     type: 'list',

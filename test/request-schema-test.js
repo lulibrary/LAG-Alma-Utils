@@ -149,6 +149,34 @@ describe('request schema tests', function () {
           })
         })
     })
+
+    it('should force the user_id to lowercase', () => {
+      sandbox.stub(Date, 'now').returns(0)
+
+      const userUUID = uuid()
+      const upcaseUserID = `TEST_USER_ID_${userUUID.toUpperCase()}`
+      const lowercaseUserID = `test_user_id_${userUUID.toLowerCase()}`
+      const testRequestID = uuid()
+
+      const testLoanData = {
+        request_id: testRequestID,
+        user_primary_id: upcaseUserID
+      }
+
+      return new TestRequestModel(testLoanData).save()
+        .then(() => {
+          return docClient.get({
+            Key: { request_id: testRequestID },
+            TableName: 'requestTable'
+          }).promise().then(res => {
+            res.Item.should.deep.equal({
+              request_id: testRequestID,
+              user_primary_id: lowercaseUserID,
+              record_expiry_date: 2 * 7 * 24 * 60 * 60
+            })
+          })
+        })
+    })
   })
 
   describe('getValid method tests', () => {

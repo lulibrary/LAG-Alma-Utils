@@ -121,13 +121,65 @@ describe('user schema tests', function () {
         primary_id: testUserID
       }).save()
         .then(() => {
-          TestUserModel.get(testUserID)
-            .should.eventually.deep.equal({
-              primary_id: testUserID,
-              expiry_date: 2 * 60 * 60,
-              loan_ids: [],
-              request_ids: [],
-              fee_ids: []
+          return TestUserModel.get(testUserID)
+            .then(res => {
+              Object.assign({}, res).should.deep.equal({
+                primary_id: testUserID,
+                loan_ids: [],
+                request_ids: [],
+                fee_ids: [],
+                expiry_date: 7200
+              })
+            })
+        })
+    })
+
+    it('should save user IDs as lowercase', () => {
+      sandbox.stub(Date, 'now').returns(0)
+
+      const testUUID = uuid()
+      const testUserID = `test_user_${testUUID.toLowerCase()}`
+      const testUpcaseID = `TEST_USER_${testUUID.toUpperCase()}`
+
+      return new TestUserModel({
+        primary_id: testUpcaseID,
+        loan_ids: []
+      }).save()
+        .then(res => {
+          return TestUserModel.get(testUserID)
+            .then(res => {
+              Object.assign({}, res).should.deep.equal({
+                primary_id: testUserID,
+                loan_ids: [],
+                request_ids: [],
+                fee_ids: [],
+                expiry_date: 7200
+              })
+            })
+        })
+    })
+
+    it('should match a queried uppercase ID to a lowercase ID on a record', () => {
+      sandbox.stub(Date, 'now').returns(0)
+
+      const testUUID = uuid()
+      const testUserID = `test_user_${testUUID.toLowerCase()}`
+      const testUpcaseID = `TEST_USER_${testUUID.toUpperCase()}`
+
+      return new TestUserModel({
+        primary_id: testUserID,
+        loan_ids: []
+      }).save()
+        .then(() => {
+          return TestUserModel.get(testUpcaseID)
+            .then(res => {
+              Object.assign({}, res).should.deep.equal({
+                primary_id: testUserID,
+                loan_ids: [],
+                request_ids: [],
+                fee_ids: [],
+                expiry_date: 7200
+              })
             })
         })
     })

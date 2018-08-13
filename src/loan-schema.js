@@ -23,7 +23,10 @@ const loanSchema = new Schema({
     type: String,
     hashKey: true
   },
-  user_id: String,
+  user_id: {
+    type: String,
+    lowercase: true
+  },
   renewable: Boolean,
   call_number: String,
   loan_status: String,
