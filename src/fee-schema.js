@@ -15,9 +15,27 @@ const feeSchema = new Schema({
     type: String,
     hashKey: true
   },
-  user_primary_id: String,
-  type: String,
-  status: String,
+  type: {
+    type: 'map',
+    map: {
+      value: String,
+      desc: String
+    }
+  },
+  status: {
+    type: 'map',
+    map: {
+      value: String,
+      desc: String
+    }
+  },
+  user_primary_id: {
+    type: 'map',
+    map: {
+      value: String,
+      link: String
+    }
+  },
   balance: Number,
   remaining_vat_amount: Number,
   original_amount: Number,
@@ -25,9 +43,16 @@ const feeSchema = new Schema({
   creation_time: Number,
   status_time: Number,
   comment: String,
-  owner: String,
+  owner: {
+    type: 'map',
+    map: {
+      value: String,
+      desc: String
+    }
+  },
   title: String,
   barcode: String,
+  link: String,
   bursar_transaction_id: String,
   transactions: {
     type: 'list',
