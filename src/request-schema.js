@@ -15,7 +15,10 @@ const requestSchema = new Schema({
     type: String,
     hashKey: true
   },
-  user_primary_id: String,
+  user_primary_id: {
+    type: String,
+    lowercase: true
+  },
   request_type: String,
   request_sub_type: {
     type: 'map',
