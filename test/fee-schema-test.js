@@ -59,9 +59,18 @@ describe('fee schema tests', function () {
       const testID = uuid()
       const testFeeData = {
         id: testID,
-        user_primary_id: 'a user',
-        type: 'a type',
-        status: 'a status',
+        user_primary_id: {
+          value: 'a user',
+          link: 'http://a.link.for.user'
+        },
+        type: {
+          value: 'a type',
+          desc: 'this is a type'
+        },
+        status: {
+          value: 'a status',
+          desc: 'this is a status'
+        },
         balance: 123456,
         remaining_vat_amount: 12345,
         original_amount: 100.00,
@@ -69,9 +78,13 @@ describe('fee schema tests', function () {
         creation_time: 1234567890,
         status_time: 9876543210,
         comment: 'a comment',
-        owner: 'an owner',
+        owner: {
+          value: 'a owner',
+          desc: 'this is an owner'
+        },
         title: 'a title',
         barcode: 'a barcode',
+        link: 'a link',
         bursar_transaction_id: 'a transaction id',
         transactions: [{
           transaction: '1',
@@ -87,9 +100,18 @@ describe('fee schema tests', function () {
 
       const expected = {
         id: testID,
-        user_primary_id: 'a user',
-        type: 'a type',
-        status: 'a status',
+        user_primary_id: {
+          value: 'a user',
+          link: 'http://a.link.for.user'
+        },
+        type: {
+          value: 'a type',
+          desc: 'this is a type'
+        },
+        status: {
+          value: 'a status',
+          desc: 'this is a status'
+        },
         balance: 123456,
         remaining_vat_amount: 12345,
         original_amount: 100.00,
@@ -97,9 +119,13 @@ describe('fee schema tests', function () {
         creation_time: 1234567890,
         status_time: 9876543210,
         comment: 'a comment',
-        owner: 'an owner',
+        owner: {
+          value: 'a owner',
+          desc: 'this is an owner'
+        },
         title: 'a title',
         barcode: 'a barcode',
+        link: 'a link',
         bursar_transaction_id: 'a transaction id',
         transactions: [{
           transaction: '1',
@@ -134,13 +160,19 @@ describe('fee schema tests', function () {
       const testID = uuid()
       const testFeeData = {
         id: testID,
-        user_primary_id: 'a user',
+        user_primary_id: {
+          value: 'a user',
+          link: 'a link'
+        },
         transactions: []
       }
 
       const expected = {
         id: testID,
-        user_primary_id: 'a user',
+        user_primary_id: {
+          value: 'a user',
+          link: 'a link'
+        },
         transactions: [],
         expiry_date: 2 * 7 * 24 * 60 * 60
       }
