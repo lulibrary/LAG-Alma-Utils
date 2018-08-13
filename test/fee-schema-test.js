@@ -217,5 +217,37 @@ describe('fee schema tests', function () {
           })
         })
     })
+
+    it('should force the user_id value to lowercase', () => {
+      sandbox.stub(Date, 'now').returns(0)
+
+      const userUUID = uuid()
+      const upcaseUserID = `TEST_USER_ID_${userUUID.toUpperCase()}`
+      const lowercaseUserID = `test_user_id_${userUUID.toLowerCase()}`
+      const testFeeID = uuid()
+
+      const testLoanData = {
+        id: testFeeID,
+        user_primary_id: {
+          value: upcaseUserID
+        }
+      }
+
+      return new TestFeeModel(testLoanData).save()
+        .then(() => {
+          return docClient.get({
+            Key: { id: testFeeID },
+            TableName: 'feeTable'
+          }).promise().then(res => {
+            res.Item.should.deep.equal({
+              id: testFeeID,
+              user_primary_id: {
+                value: lowercaseUserID
+              },
+              expiry_date: 2 * 7 * 24 * 60 * 60
+            })
+          })
+        })
+    })
   })
 })

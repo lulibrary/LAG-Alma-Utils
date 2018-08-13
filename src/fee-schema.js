@@ -32,7 +32,10 @@ const feeSchema = new Schema({
   user_primary_id: {
     type: 'map',
     map: {
-      value: String,
+      value: {
+        type: String,
+        lowercase: true
+      },
       link: String
     }
   },
