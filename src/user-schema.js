@@ -1,5 +1,4 @@
 const dynamoose = require('dynamoose')
-const moment = require('moment')
 const _chunk = require('lodash.chunk')
 
 const getValid = require('./get-valid')
@@ -18,9 +17,7 @@ const expiryOffset = {
   unit: 'hours'
 }
 
-const calculateExpiry = (offset) => {
-  return moment().add(offset.value, offset.unit).unix()
-}
+const calculateExpiry = require('./calculate-expiry')
 
 const userSchema = new Schema({
   primary_id: {
