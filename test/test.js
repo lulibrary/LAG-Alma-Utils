@@ -6,6 +6,7 @@ const RequestSchema = require('../src/request-schema')
 const LoanSchema = require('../src/loan-schema')
 const FeeSchema = require('../src/fee-schema')
 const UserSchema = require('../src/user-schema')
+const QueuedUserSchema = require('../src/queued-user-schema')
 
 // Module under test
 const Utils = require('../src')
@@ -29,5 +30,9 @@ describe('index tests', () => {
 
   it('should export a UserSchema object matching the one exported by user-schema.js', () => {
     Utils.UserSchema.should.deep.equal(UserSchema)
+  })
+
+  it('should export a QueuedUserSchema object matching the one exported by queued-user-schema.js', () => {
+    Utils.QueuedUserSchema.should.deep.equal(QueuedUserSchema)
   })
 })
