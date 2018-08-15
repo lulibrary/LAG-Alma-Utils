@@ -165,6 +165,32 @@ describe('loan schema tests', function () {
         })
     })
 
+    it('should force the user_id to lowercase', () => {
+      const userUUID = uuid()
+      const upcaseUserID = `TEST_USER_ID_${userUUID.toUpperCase()}`
+      const lowercaseUserID = `test_user_id_${userUUID.toLowerCase()}`
+      const testLoanID = uuid()
+
+      const testLoanData = {
+        loan_id: testLoanID,
+        user_id: upcaseUserID
+      }
+
+      return new TestLoanModel(testLoanData).save()
+        .then(() => {
+          return docClient.get({
+            Key: { loan_id: testLoanID },
+            TableName: 'loanTable'
+          }).promise().then(res => {
+            res.Item.should.deep.equal({
+              loan_id: testLoanID,
+              user_id: lowercaseUserID,
+              expiry_date: 0
+            })
+          })
+        })
+    })
+
     describe('getValid method tests', () => {
       it('should return a record with an expiry date in the future', () => {
         const stubTime = 0

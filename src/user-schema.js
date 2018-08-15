@@ -22,7 +22,8 @@ const calculateExpiry = require('./calculate-expiry')
 const userSchema = new Schema({
   primary_id: {
     type: String,
-    hashKey: true
+    hashKey: true,
+    lowercase: true
   },
   loan_ids: {
     type: 'list',
