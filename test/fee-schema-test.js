@@ -75,8 +75,8 @@ describe('fee schema tests', function () {
         remaining_vat_amount: 12345,
         original_amount: 100.00,
         original_vat_amount: 99,
-        creation_time: 1234567890,
-        status_time: 9876543210,
+        creation_time: 'a time',
+        status_time: 'another time',
         comment: 'a comment',
         owner: {
           value: 'a owner',
@@ -116,8 +116,8 @@ describe('fee schema tests', function () {
         remaining_vat_amount: 12345,
         original_amount: 100.00,
         original_vat_amount: 99,
-        creation_time: 1234567890,
-        status_time: 9876543210,
+        creation_time: 'a time',
+        status_time: 'another time',
         comment: 'a comment',
         owner: {
           value: 'a owner',

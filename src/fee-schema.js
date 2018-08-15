@@ -43,8 +43,8 @@ const feeSchema = new Schema({
   remaining_vat_amount: Number,
   original_amount: Number,
   original_vat_amount: Number,
-  creation_time: Number,
-  status_time: Number,
+  creation_time: String,
+  status_time: String,
   comment: String,
   owner: {
     type: 'map',
