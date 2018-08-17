@@ -21,7 +21,7 @@ All schemas include a `model.getValid(hashKey)` method which will only return a 
 
 ## Usage
 
-`npm installgit+ssh://git@github.com/lulibrary/LAG-Alma-Utils.git#master`
+`npm install git+ssh://git@github.com/lulibrary/LAG-Alma-Utils.git#master`
 ```javascript
 const { UserSchema, LoanSchema } = require('@lulibrary/lag-alma-utils')
 
